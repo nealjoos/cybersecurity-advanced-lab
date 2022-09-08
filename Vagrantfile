@@ -51,7 +51,8 @@ def network_options(host)
 
   options[:mac] = host['mac'].gsub(/[-:]/, '') if host.key?('mac')
   options[:auto_config] = host['auto_config'] if host.key?('auto_config')
-  options[:virtualbox__intnet] = true if host.key?('intnet') && host['intnet']
+  ## changed true to host['intnet'] to add name of custom internal networks
+  options[:virtualbox__intnet] = host['intnet'] if host.key?('intnet') && host['intnet']
   options
 end
 
@@ -82,6 +83,8 @@ end
 
 # }}}
 
+### Template for Alma machines from bert startstructuur
+
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   hosts.each do |host|
     config.vm.define host['name'] do |node|
@@ -92,6 +95,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       node.vm.network :private_network, network_options(host)
       custom_synced_folders(node.vm, host)
       forwarded_ports(node.vm, host)
+      #node.ssh.insert_key = false
 
       # Add VM to a VirtualBox group
       node.vm.provider :virtualbox do |vb|
@@ -107,7 +111,80 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       node.vm.provision 'shell', path: 'provisioning/' + host['name'] + '.sh'
     end
   end
+
+  ### Non-alma's or complex vbox machines, TODO make more flexibile with wrapper functions of bert
+
+  config.vm.define "almarouter", primary: true do |almarouter|
+    almarouter.vm.box = DEFAULT_BASE_BOX
+    almarouter.vm.hostname = 'almarouter'
+    #almarouter.ssh.insert_key = false
+  
+    almarouter.vm.network :private_network, ip: "172.30.42.10"
+    almarouter.vm.network :private_network, ip: "172.30.42.130", virtualbox__intnet: "internal1"
+    almarouter.vm.network :private_network, ip: "172.30.103.10", virtualbox__intnet: "internal2"
+  
+    almarouter.vm.provider :virtualbox do |v|
+      v.customize ["modifyvm", :id, "--memory", 256]
+      v.customize ["modifyvm", :id, "--name", "almarouter"]
+    end
+  end
+
+  config.vm.define "alpinedb", primary: true do |alpinedb|
+    alpinedb.vm.box = "generic/alpine316"
+    alpinedb.vm.hostname = 'alpinedb'
+    alpinedb.ssh.insert_key = false
+  
+    alpinedb.vm.network :private_network, ip: "172.30.42.134", virtualbox__intnet: "internal1"
+  
+    alpinedb.vm.provider :virtualbox do |v|
+      v.customize ["modifyvm", :id, "--memory", 256]
+      v.customize ["modifyvm", :id, "--name", "alpinedb"]
+    end
+  end
+
+  config.vm.define "dc", primary: true do |dc|
+    dc.vm.box = "gusztavvargadr/windows-server-core"
+    dc.vm.hostname = 'dc'
+    
+  
+    dc.vm.network :private_network, ip: "172.30.42.132", virtualbox__intnet: "internal1"
+  
+    dc.vm.provider :virtualbox do |v|
+      v.customize ["modifyvm", :id, "--memory", 1024]
+      v.customize ["modifyvm", :id, "--name", "dc"]
+    end
+  end
+
+  config.vm.define "winclient", primary: true do |winclient|
+    winclient.vm.box = "gusztavvargadr/windows-10"
+    winclient.vm.hostname = 'winclient'
+
+    winclient.vm.network :private_network, type: "dhcp", virtualbox__intnet: "internal2"
+
+    winclient.vm.provider :virtualbox do |v|
+      v.customize ["modifyvm", :id, "--memory", 1024]
+      v.customize ["modifyvm", :id, "--name", "winclient"]
+    end
+  end
+
+  config.vm.define "redkali", primary: true do |redkali|
+    redkali.vm.box = "kalilinux/rolling"
+    redkali.vm.hostname = 'redkali'
+
+    redkali.vm.network :private_network, type: "dhcp"
+
+    redkali.vm.provider :virtualbox do |v|
+      v.customize ["modifyvm", :id, "--memory", 1024]
+      v.customize ["modifyvm", :id, "--name", "redkali"]
+    end
+  end
+
 end
+
+
+
+
+
 
 # -*- mode: ruby -*-
 # vi: ft=ruby :

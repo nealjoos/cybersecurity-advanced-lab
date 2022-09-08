@@ -32,10 +32,12 @@
 
 - name: web
   ip: 172.30.42.42
-	netmask: 255.255.255.192
-  intnet: true
+  netmask: 255.255.255.192
+  memory: 512
+  intnet: "internal1"
 
 - name: client
   ip: 172.30.42.200
-	netmask: 255.255.255.128
-  intnet: true
+  netmask: 255.255.255.128
+  memory: 512
+  intnet: "internal2"

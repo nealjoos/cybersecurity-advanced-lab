@@ -73,7 +73,8 @@ log "Installing useful packages"
 dnf install -y \
     bind-utils \
     nano \
-    tree
+    tree \ 
+    vim 
 
 log "Enabling essential services"
 
