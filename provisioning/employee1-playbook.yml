@@ -1,0 +1,5 @@
+---
+- hosts: employee1
+  become: yes
+  tasks:
+    - ansible.builtin.command: ip route add 172.30.42.0/26 via 172.30.128.1

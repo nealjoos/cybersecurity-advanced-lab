@@ -46,8 +46,8 @@ The router itself also has an uplink to the Host OS. It is considered as the WAN
 Name      | Network   | IP                | prefixlength  | default gateway | Remarks
 --------- | --------- | ----------------- | ------------- | --------------- | ---
 router    | outside   | DHCP              | 24            | ???             | Router of the environment
-router    | servers   | 172.30.42.1       | 26            | ???             | "
-router    | employees | 172.30.128.1      | 25            | ???             | "
+router    | servers   | 172.30.42.1       | 26            | ???             | ^
+router    | employees | 172.30.128.1      | 25            | ???             | ^
 web       | servers   | 172.30.42.2       | 26            | 172.30.42.1     | Webserver
 database  | servers   | 172.30.42.3       | 26            | 172.30.42.1     | Lightweight MySQL Database
 employee1 | employees | DHCP              | 25            | 172.30.128.1    | Ubuntu

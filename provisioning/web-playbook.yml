@@ -1,0 +1,7 @@
+---
+- hosts: web
+  become: yes
+  tasks:
+    - ansible.builtin.command: ip route add 172.30.128.0/25 via 172.30.42.1
+  roles:
+    - bertvv.httpd

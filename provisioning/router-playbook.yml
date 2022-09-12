@@ -1,0 +1,15 @@
+---
+- hosts: router
+  become: yes
+  vars:
+    dhcp_subnets:
+      - ip: 172.30.128.0
+        netmask: 255.255.255.128
+        range_begin: 172.30.128.10
+        range_end: 172.30.128.126
+  tasks:
+    - ansible.posix.sysctl:
+        name: net.ipv4.ip_forward
+        value: "1"
+  roles:
+    - bertvv.dhcp
