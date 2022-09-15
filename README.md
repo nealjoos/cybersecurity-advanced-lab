@@ -55,6 +55,61 @@ red       | employees | DHCP              | 25            | 172.30.128.1    | Ka
 dc        | servers   | 172.30.42.4       | 26            | 172.30.42.1     | Windows AD server core with domain
 employee2 | employees | DHCP              | 25            | 172.30.128.1    | Windows 10 client (domain joined) 
 
+
+# Vragen voor de omgeving
+
+## Les 1 
+
+Maak een netwerkschema van de gegeven opstelling. Probeer volgende vragen te beantwoorden en mee te nemen in je overzicht: 
+
+- Welke machines kunnen met elkaar communiceren?
+- Wat is de default gateway van elke machine?
+- Wat is de dns-server van elke machine?
+- Welke machines hebben een statisch IP en welke gebruiken DHCP? 
+- Welke users bestaan op welke machines?
+- Wat is het doel (welke processen zijn essentieel) van elke machine?
+- Onderzoek of de DNS server kwetsbaar is voor een DNS Zone Transfer aanval. Wat houdt deze aanval precies in? Indien nodig, probeer de server zodanig te configureren dat deze aanval niet meer kan. Documenteer deze update.
+
+## Les 2 
+
+(Gegeven, informatie over de omgeving: Users + Groups + Processen + Doelen)
+
+- Gebruik Wireshark om na te gaan wat voor verkeer er passief op het netwerk passeert. Documenteer je bevindingen en ga na welke zaken je beter kan beveiligen of updaten. 
+- Gebruik nmap om na te gaan welke poorten open staan op de machines. Zijn deze allemaal nodig en zoja op welke interfaces moeten ze beschikbaar zijn? Documenteer je bevindingen en ga na welke zaken je beter kan beveiligen.
+- Configuur de router zodanig dat de functionaliteit van het netwerk niet verloren gaat maar dat het netwerk beter gesegmenteerd is. Maak eventueel gebruik van zoning. Welke machines moeten bereikbaar zijn van buitenaf en welke niet?
+
+
+## Les 3 
+
+- Zet een nieuwe virtuele machine op die dient als "Honeypot" om je webserver beter te beschermen. Kies gerust welke technology je hier voor wilt gebruiken. Een suggestie is bijvoorbeeld https://github.com/cowrie/cowrie 
+- Zorg dat de SSH server op de webserver gebruik maakt van een andere poort dan 22. Gebruik SSH port forwarding om vervolgens poort 22 op de webserver te koppelen aan een poort van de honeypot. 
+
+
+## Les 4 
+
+- Buffer / Gastles
+
+
+## Les 5
+
+- Laat enkel de Router, de domein controller en de webserver draaien. Installeer Splunk in een nieuwe virtuele machine en configuur de Windows server en de webserver zodanig dat alle commando's die uitgevoerd worden op de machines gelogt en geraadpleegd kunnen worden in splunk. Documenteer goed hoe je dit gedaan hebt. 
+
+OF
+
+- Splunk skippen en houden voor security onion, hier een vrij theorie/inputles van maken met de concepten en de praktische plaatsen waar logs gestored worden en waarom we wat doorsturen naar zaken als splunk/ELK. Dit is misschien beter om concepteel het goed te snappen maar dan moeten lessen 6 buffer en les 7 wisselen.
+
+- Test dit uit door <TODO use case>
+
+## Les 6
+
+- Buffer
+
+## Les 7 
+
+- Bouw een SOC uit door security onion te installeren in een nieuwe virtuele machine.
+
+
+
 ## Users
 * Thomas Clauwaert
 * Martijn Saelens
