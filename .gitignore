@@ -11,3 +11,6 @@
 
 # VirtualBox appliances
 *.ova
+
+# DrawIO
+.$*

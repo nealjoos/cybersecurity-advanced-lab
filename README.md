@@ -22,7 +22,7 @@ The network consists of 2 company-LANs, attached to a router:
     * Addresses in network    - 64
     * Network range           - 172.30.42.0 - 172.30.42.63
     * Usable range            - 172.30.42.1 - 172.30.42.62
-* a LAN network for the employees - 172.30.128.0/25: DHCP + DNS for these networks is provided by the router.
+* a LAN network for the employees - 172.30.128.0/25: DHCP for these networks is provided by the router. This network is located behind a NAT.
     * Network address         - 172.30.128.0
     * Network mask            - 255.255.255.128
     * Network mask (bits)     - 25
@@ -31,8 +31,18 @@ The network consists of 2 company-LANs, attached to a router:
     * Network range           - 172.30.128.0 - 172.30.128.127
     * Usable range            - 172.30.128.1 - 172.30.128.126
 
-The router itself also has an uplink to the Host OS. It is considered as the WAN entry point of the company network. This host-only network can also be used to connect a Kali VM to attack the company premises. DHCP is coming from VirtualBox for this network.
-* WAN network: 10.0.2.0/24
+The router itself also has an uplink to the host OS. It is considered as the WAN entry point of the company network. This host-only network can also be used to connect a Kali VM to attack the company premises. DHCP is coming from VirtualBox for this network.
+* 192.168.56.0/24: DHCP is provided by the WAN provider
+    * Network address         - 192.168.56.0
+    * Network mask            - 255.255.255.0
+    * Network mask (bits)     - 24
+    * Broadcast address       - 192.168.56.255
+    * Addresses in network    - 256
+    * Network range           - 192.168.56.0 - 192.168.56.255
+    * Usable range            - 192.168.56.1 - 192.168.56.254
+
+VirtualBox also provides a management network, so the hosts can download software from the internet and are accessible by SSH. This network is located behind a NAT.
+* Management network: 10.0.2.0/24
     * Network address         - 10.0.2.0
     * Network mask            - 255.255.255.0
     * Network mask (bits)     - 24
@@ -43,17 +53,17 @@ The router itself also has an uplink to the Host OS. It is considered as the WAN
 
 ## Machines overview
 
-Name      | Network   | IP                | prefixlength  | default gateway | Remarks
---------- | --------- | ----------------- | ------------- | --------------- | ---
-router    | outside   | DHCP              | 24            | ???             | Router of the environment
-router    | servers   | 172.30.42.1       | 26            | ???             | ^
-router    | employees | 172.30.128.1      | 25            | ???             | ^
-web       | servers   | 172.30.42.2       | 26            | 172.30.42.1     | Webserver
-database  | servers   | 172.30.42.3       | 26            | 172.30.42.1     | Lightweight MySQL Database
-employee1 | employees | DHCP              | 25            | 172.30.128.1    | Ubuntu
-red       | employees | DHCP              | 25            | 172.30.128.1    | Kali outside the network
-dc        | servers   | 172.30.42.4       | 26            | 172.30.42.1     | Windows AD server core with domain
-employee2 | employees | DHCP              | 25            | 172.30.128.1    | Windows 10 client (domain joined) 
+Name      | Network   | IP           | prefixlength | default gateway | Remarks
+--------- | --------- | ------------ | ------------ | --------------- | ---
+router    | uplink    | DHCP         | 24           | ???             | Router of the environment
+router    | servers   | 172.30.42.1  | 26           | ???             | ^
+router    | employees | 172.30.128.1 | 25           | ???             | ^
+web       | servers   | 172.30.42.2  | 26           | 172.30.42.1     | Webserver
+database  | servers   | 172.30.42.3  | 26           | 172.30.42.1     | Lightweight MySQL Database
+employee1 | employees | DHCP         | 25           | 172.30.128.1    | Ubuntu
+red       | employees | DHCP         | 25           | 172.30.128.1    | Kali outside the network
+dc        | servers   | 172.30.42.4  | 26           | 172.30.42.1     | Windows AD server core with domain
+employee2 | employees | DHCP         | 25           | 172.30.128.1    | Windows 10 client (domain joined) 
 
 
 # Vragen voor de omgeving
@@ -107,8 +117,6 @@ OF
 ## Les 7 
 
 - Bouw een SOC uit door security onion te installeren in een nieuwe virtuele machine.
-
-
 
 ## Users
 * Thomas Clauwaert
