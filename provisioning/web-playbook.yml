@@ -1,7 +1,16 @@
 ---
 - hosts: web
   become: yes
-  tasks:
-    - ansible.builtin.command: ip route add 172.30.128.0/25 via 172.30.42.1
   roles:
     - bertvv.httpd
+    - linux-system-roles.network
+  vars:
+    network_state:
+      routes:
+        config:
+          - destination: 172.30.128.0/25
+            next-hop-address: 172.30.42.1
+            next-hop-interface: enp0s8
+          - destination: 192.168.56.0/24
+            next-hop-address: 172.30.42.1
+            next-hop-interface: enp0s8

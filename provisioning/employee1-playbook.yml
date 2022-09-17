@@ -1,5 +1,20 @@
 ---
 - hosts: employee1
   become: yes
-  tasks:
-    - ansible.builtin.command: ip route add 172.30.42.0/26 via 172.30.128.1
+  roles:
+    - role: mrlesmithjr.netplan
+      become: yes
+      netplan_enabled: true
+      netplan_config_file: /etc/netplan/50-vagrant.yaml 
+      netplan_configuration:
+        network:
+          version: 2
+          renderer: networkd
+          ethernets:
+            enp0s8:
+              dhcp4: true
+              routes:
+                - to: 172.30.42.0/26
+                  via: 172.30.128.1
+                - to: 192.168.56.0/24
+                  via: 172.30.128.1
