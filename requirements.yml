@@ -1,0 +1,8 @@
+# Install using `ansible-galaxy install -r requirements.yml`
+---
+roles:
+    - bertvv.mariadb
+    - linux-system-roles.network
+    - mrlesmithjr.netplan
+    - bertvv.dhcp
+    - bertvv.httpd
