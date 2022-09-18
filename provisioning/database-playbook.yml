@@ -2,16 +2,16 @@
 - hosts: database
   become: yes
   roles:
-    - bertvv.mariadb
-    - linux-system-roles.network
+      - bertvv.mariadb
+      - linux-system-roles.network
   vars:
-    mariadb_bind_address: 0.0.0.0
-    network_state:
-      routes:
-        config:
-          - destination: 172.30.128.0/25
-            next-hop-address: 172.30.42.1
-            next-hop-interface: enp0s8
-          - destination: 192.168.56.0/24
-            next-hop-address: 172.30.42.1
-            next-hop-interface: enp0s8
+      mariadb_bind_address: 0.0.0.0
+      network_state:
+          routes:
+              config:
+                  - destination: 172.30.128.0/25
+                    next-hop-address: 172.30.42.1
+                    next-hop-interface: enp0s8
+                  - destination: 192.168.56.0/24
+                    next-hop-address: 172.30.42.1
+                    next-hop-interface: enp0s8

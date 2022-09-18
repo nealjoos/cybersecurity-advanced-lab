@@ -1,3 +1,5 @@
+ENV['VAGRANT_NO_PARALLEL'] = 'yes'
+
 Vagrant.configure("2") do |config|
 
   ### router ###################################################################
@@ -104,18 +106,18 @@ Vagrant.configure("2") do |config|
 
   ## outside ##################################################################
 
-  config.vm.define "red" do |host|
-    host.vm.box = "kalilinux/rolling"
-    host.vm.hostname = "red"
+#   config.vm.define "red" do |host|
+#     host.vm.box = "kalilinux/rolling"
+#     host.vm.hostname = "red"
 
-    host.vm.network "private_network", type: "dhcp"
+#     host.vm.network "private_network", type: "dhcp"
 
-    host.vm.provider :virtualbox do |v|
-      v.name = "red"
-      v.cpus = "1"
-      v.memory = "2048"
-    end
-  end
+#     host.vm.provider :virtualbox do |v|
+#       v.name = "red"
+#       v.cpus = "1"
+#       v.memory = "2048"
+#     end
+#   end
 
 end
 

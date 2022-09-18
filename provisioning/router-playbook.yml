@@ -2,46 +2,57 @@
 - hosts: router
   become: yes
   roles:
-    - bertvv.dhcp
+      - bertvv.dhcp
   tasks:
-    - ansible.posix.sysctl:
-        name: net.ipv4.ip_forward
-        value: "1"
-    - ansible.builtin.dnf:
-        name: bind
-        state: present
-    - ansible.builtin.copy:
-        content: |
-          options {
-              listen-on port 53 { any; };
-              
-              directory "/var/named";
-              dump-file "/var/named/data/cache_dump.db";
-              statistics-file "/var/named/data/named_stats.txt";
-              memstatistics-file "/var/named/data/named_mem_stats.txt";
-              secroots-file "/var/named/data/named.secroots";
-              recursing-file "/var/named/data/named.recursing";
-              
-              allow-query { any; };
+      - ansible.posix.sysctl:
+            name: net.ipv4.ip_forward
+            value: "1"
+      - ansible.builtin.service:
+            name: firewalld
+            enabled: yes
+            state: started
+      - ansible.builtin.shell: |
+            firewall-cmd --permanent --change-zone=enp0s8 --zone=external
+            firewall-cmd --reload
+      - ansible.builtin.dnf:
+            name: bind
+            state: present
+      - ansible.builtin.copy:
+            content: |
+                options {
+                    listen-on port 53 { any; };
+                    
+                    directory "/var/named";
+                    dump-file "/var/named/data/cache_dump.db";
+                    statistics-file "/var/named/data/named_stats.txt";
+                    memstatistics-file "/var/named/data/named_mem_stats.txt";
+                    secroots-file "/var/named/data/named.secroots";
+                    recursing-file "/var/named/data/named.recursing";
+                    
+                    allow-query { any; };
 
-              recursion yes;
+                    recursion yes;
 
-              dnssec-validation yes;
+                    dnssec-validation yes;
 
-              forwarders {
-                      8.8.8.8;
-                      8.8.4.4;
-              };
-              forward only;
-          };
-        dest: /etc/named.conf
-    - ansible.builtin.service:
-        name: named
-        enabled: yes
-        state: restarted
+                    forwarders {
+                            8.8.8.8;
+                            8.8.4.4;
+                    };
+                    forward only;
+                };
+            dest: /etc/named.conf
+      - ansible.builtin.service:
+            name: named
+            enabled: yes
+            state: restarted
+      - ansible.builtin.shell: |
+            firewall-cmd --add-service=dns
+            firewall-cmd --reload
   vars:
-    dhcp_subnets:
-      - ip: 172.30.128.0
-        netmask: 255.255.255.128
-        range_begin: 172.30.128.10
-        range_end: 172.30.128.126
+      dhcp_subnets:
+          - ip: 172.30.128.0
+            netmask: 255.255.255.128
+            range_begin: 172.30.128.10
+            range_end: 172.30.128.126
+      dhcp_global_domain_name_servers: 172.30.42.4
