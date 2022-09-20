@@ -56,3 +56,5 @@
             range_begin: 172.30.128.10
             range_end: 172.30.128.126
       dhcp_global_domain_name_servers: 172.30.42.4
+      dhcp_global_domain_name: insecure.cyb
+      

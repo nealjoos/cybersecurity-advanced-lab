@@ -1,0 +1,3 @@
+Good job, this file should not be visible / world readable. 
+Create a group "Financial" and put all users from the Aladdin OU in it. 
+Only these users are allowed in this share. Do not forget the domain admins, they need access to ;)
