@@ -15,12 +15,12 @@ Vagrant.configure("2") do |config|
     host.vm.provider :virtualbox do |v|
       v.name = "router"
       v.cpus = "1"
-      v.memory = "2048"
+      v.memory = "1024"
     end
 
-    host.vm.provision "ansible", host_key_checking: true do |ansible|
-      ansible.playbook = "provisioning/router-playbook.yml"
-    end
+#    host.vm.provision "ansible", host_key_checking: true do |ansible|
+#      ansible.playbook = "provisioning/router-playbook.yml"
+#    end
   end
 
   ### servers ##################################################################
@@ -34,12 +34,12 @@ Vagrant.configure("2") do |config|
     host.vm.provider :virtualbox do |v|
       v.name = "web"
       v.cpus = "1"
-      v.memory = "2048"
+      v.memory = "1024"
     end
 
-    host.vm.provision "ansible", host_key_checking: true do |ansible|
-      ansible.playbook = "provisioning/web-playbook.yml"
-    end
+#    host.vm.provision "ansible", host_key_checking: true do |ansible|
+#      ansible.playbook = "provisioning/web-playbook.yml"
+#    end
   end
 
   config.vm.define "database" do |host|
@@ -51,26 +51,31 @@ Vagrant.configure("2") do |config|
     host.vm.provider :virtualbox do |v|
       v.name = "database"
       v.cpus = "1"
-      v.memory = "2048"
+      v.memory = "1024"
     end
 
-    host.vm.provision "ansible", host_key_checking: true do |ansible|
-      ansible.playbook = "provisioning/database-playbook.yml"
-    end
+#    host.vm.provision "ansible", host_key_checking: true do |ansible|
+#      ansible.playbook = "provisioning/database-playbook.yml"
+#    end
   end
 
-  #   config.vm.define "domaincontroller" do |host|
-  #     host.vm.box = "gusztavvargadr/windows-server-core"
-  #     host.vm.hostname = "domaincontroller"
+  config.vm.define "dc" do |host|
+    host.vm.box = "gusztavvargadr/windows-server-core"
+    host.vm.hostname = "dc"
 
-  #     host.vm.network "private_network", ip: "172.30.42.4", netmask: "255.255.255.192", virtualbox__intnet: "servers"
+    host.vm.network "private_network", ip: "172.30.42.4", netmask: "255.255.255.192", virtualbox__intnet: "servers"
 
-  #     host.vm.provider :virtualbox do |v|
-  #       v.name = "domaincontroller"
-  #       v.cpus = "1"
-  #       v.memory = "2048"
-  #     end
-  #   end
+    host.vm.provider :virtualbox do |v|
+      v.name = "dc"
+      v.cpus = "1"
+      v.memory = "2048"
+    end
+    
+#    host.vm.provision "ansible", host_key_checking: true do |ansible|
+#      ansible.playbook = "provisioning/dc-playbook.yml"
+#    end
+
+  end
 
   ### employees ################################################################
 
@@ -86,38 +91,38 @@ Vagrant.configure("2") do |config|
       v.memory = "2048"
     end
 
-    host.vm.provision "ansible", host_key_checking: true do |ansible|
-      ansible.playbook = "provisioning/employee1-playbook.yml"
+#    host.vm.provision "ansible", host_key_checking: true do |ansible|
+#      ansible.playbook = "provisioning/employee1-playbook.yml"
+#    end
+  end
+
+  config.vm.define "employee2" do |host|
+    host.vm.box = "gusztavvargadr/windows-10"
+    host.vm.hostname = "employee2"
+
+    host.vm.network "private_network", type: "dhcp", virtualbox__intnet: "employees"
+
+    host.vm.provider :virtualbox do |v|
+      v.name = "employee2"
+      v.cpus = "1"
+      v.memory = "2048"
     end
   end
 
-  #   config.vm.define "employee2" do |host|
-  #     host.vm.box = "gusztavvargadr/windows-10"
-  #     host.vm.hostname = "employee2"
-
-  #     host.vm.network "private_network", ip: "172.30.128.4", netmask: "255.255.255.128", virtualbox__intnet: "employees"
-
-  #     host.vm.provider :virtualbox do |v|
-  #       v.name = "employee2"
-  #       v.cpus = "1"
-  #       v.memory = "2048"
-  #     end
-  #   end
-
   ## outside ##################################################################
 
-#   config.vm.define "red" do |host|
-#     host.vm.box = "kalilinux/rolling"
-#     host.vm.hostname = "red"
+  config.vm.define "red" do |host|
+    host.vm.box = "kalilinux/rolling"
+    host.vm.hostname = "red"
 
-#     host.vm.network "private_network", type: "dhcp"
+    host.vm.network "private_network", type: "dhcp"
 
-#     host.vm.provider :virtualbox do |v|
-#       v.name = "red"
-#       v.cpus = "1"
-#       v.memory = "2048"
-#     end
-#   end
+    host.vm.provider :virtualbox do |v|
+      v.name = "red"
+      v.cpus = "1"
+      v.memory = "1024"
+    end
+  end
 
 end
 

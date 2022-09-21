@@ -1,0 +1,85 @@
+---
+- hosts: dc
+  vars:
+    domain_name: "insecure.cyb"
+    local_admin: '.\vagrant'
+    dc_password: 'Saturday14th?123'
+    recovery_password: 'Saturday14th?123'
+  gather_facts: no
+  tasks:
+  - name: Test connectivity from ansible to windows dc
+    ansible.windows.win_ping:
+
+  - name: Disable firewall for Domain, Public and Private profiles
+    win_firewall:
+      state: disabled
+      profiles:
+      - Domain
+      - Private
+      - Public
+
+  - name: Install AD
+    win_feature:
+      name: AD-Domain-Services
+      include_management_tools: yes
+      include_sub_features: yes
+      state: present
+    register: res_ad_install
+
+  - name: Pause for 1 minute to give ad domain services time and create a domain afterwards
+    ansible.builtin.pause:
+      minutes: 1
+
+  - name: Create Domain
+    win_domain:
+      dns_domain_name : "{{ domain_name }}"
+      safe_mode_password : "{{ recovery_password }}"
+    register: res_ad_domain
+
+  - name: Create wip directory to copy files to
+    ansible.windows.win_file:
+      path: C:\wip
+      state: directory
+
+  - name: Create Financial directory for insecure share
+    ansible.windows.win_file:
+      path: C:\Financial
+      state: directory
+
+  - name: Copy txt file to Financial folder
+    ansible.windows.win_copy:
+      src: rawfiles/sensitive-data.txt
+      dest: C:\Financial\sensitive-data.txt
+
+  - name: Copy PowerShell script to perform AD stuff
+    ansible.windows.win_copy:
+      src: rawfiles/ad-import.ps1
+      dest: C:\wip\ad-import.ps1
+
+  - name: Copy Disneycsv
+    ansible.windows.win_copy:
+      src: rawfiles/disney.csv
+      dest: C:\wip\disney.csv
+
+  - name: Copy Share script to create insecure share
+    ansible.windows.win_copy:
+      src: rawfiles/share.ps1
+      dest: C:\wip\share.ps1
+
+  - name: Copy DNS PowerShell script
+    ansible.windows.win_copy:
+      src: rawfiles/dns.ps1
+      dest: C:\wip\dns.ps1
+
+  - name: Reboot
+    ansible.windows.win_reboot:
+    when: (res_ad_install.reboot_required) or (res_ad_domain.reboot_required)
+
+## Before running this playbook do vagrant ssh and run
+## (Invoke-WebRequest -UseBasicParsing https://raw.githubusercontent.com/ansible/ansible/devel/examples/scripts/ConfigureRemotingForAnsible.ps1).content | iex
+## TODO manual go to DC and run in a powershell prompt
+## ./ad-import.ps1
+## ./share.ps1
+## potential updates: copying scripts can in 1 task
+## ROUTE: route /p add 172.30.128.0 mask 255.255.255.192 172.30.42.1 if <nr>
+## New-NetRoute -DestinationPrefix "172.30.128.0/25" -InterfaceIndex <nr> -NextHop 172.30.42.1

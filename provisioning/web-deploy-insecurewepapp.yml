@@ -1,0 +1,61 @@
+---
+- hosts: web
+  gather_facts: no
+  become: yes
+  tasks:
+  - name: Install java & python3-libsemanage
+    ansible.builtin.dnf:
+      name: 
+        - java-17-openjdk
+        - python3-libsemanage
+      state: latest
+
+  - name: Copy httpd.conf
+    ansible.builtin.copy:
+      src: rawfiles/httpd.conf
+      dest: /etc/httpd/conf/httpd.conf
+      owner: root
+      group: root
+      mode: '0644'
+
+  - name: Copy systemd service file for insecure webapp
+    ansible.builtin.copy:
+      src: rawfiles/insecurewebapp.service
+      dest: /etc/systemd/system/insecurewebapp.service
+      owner: root
+      group: root
+      mode: '0644'
+
+  - name: Create insecurebwebapp dir in /opt
+    ansible.builtin.file:
+      path: /opt/insecurewebapp/
+      state: directory
+      mode: '0755'
+
+  - name: Copy insecure webapp jar
+    ansible.builtin.copy:
+      src: rawfiles/app.jar
+      dest: /opt/insecurewebapp/app.jar
+      owner: root
+      group: root
+      mode: '0644'
+
+  - name: Set httpd_can_network_connect flag (for reverse proxy)
+    ansible.posix.seboolean:
+      name: httpd_can_network_connect
+      state: yes
+      persistent: yes
+
+  - name: Restart and enable httpd
+    ansible.builtin.systemd:
+      state: restarted
+      enabled: yes
+      daemon_reload: yes
+      name: httpd
+
+  - name: Restart and enable insecurewebapp
+    ansible.builtin.systemd:
+      state: restarted
+      enabled: yes
+      daemon_reload: yes
+      name: insecurewebapp

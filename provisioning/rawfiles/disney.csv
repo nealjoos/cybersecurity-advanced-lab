@@ -1,0 +1,24 @@
+Name;sn;Givenname;E-mail;samAccountName;ParentOU;Password;Enabled;mustChangePassword;Description
+Aladdin;Aladdin;Aladdin;Aladdininsecure.cyb;Aladdin;OU=Aladdin,OU=Disney,DC=insecure,DC=cyb;Hogentpass123!;$true;$false;Aladdin characters
+Jasmine;Jasmine;Jasmine;Jasmineinsecure.cyb;Jasmine;OU=Aladdin,OU=Disney,DC=insecure,DC=cyb;Hogentpass123!;$true;$false;Aladdin characters
+Genie;Genie;Genie;Genieinsecure.cyb;Genie;OU=Aladdin,OU=Disney,DC=insecure,DC=cyb;Hogentpass123!;$true;$false;Aladdin characters
+Jafar;Jafar;Jafar;Jafarinsecure.cyb;Jafar;OU=Aladdin,OU=Disney,DC=insecure,DC=cyb;Hogentpass123!;$true;$false;Aladdin characters
+Iago;Iago;Iago;Iagoinsecure.cyb;Iago;OU=Aladdin,OU=Disney,DC=insecure,DC=cyb;Hogentpass123!;$true;$false;Aladdin characters
+Abu;Abu;Abu;Abuinsecure.cyb;Abu;OU=Aladdin,OU=Disney,DC=insecure,DC=cyb;Hogentpass123!;$true;$false;Aladdin characters
+Carpet;Carpet;Carpet;Carpetinsecure.cyb;Carpet;OU=Aladdin,OU=Disney,DC=insecure,DC=cyb;Hogentpass123!;$true;$false;Aladdin characters
+Sultan;Sultan;Sultan;Sultaninsecure.cyb;Sultan;OU=Aladdin,OU=Disney,DC=insecure,DC=cyb;Hogentpass123!;$true;$false;Aladdin characters
+Rajah;Rajah;Rajah;Rajahinsecure.cyb;Rajah;OU=Aladdin,OU=Disney,DC=insecure,DC=cyb;Hogentpass123!;$true;$false;Aladdin characters
+Simba;Simba;Simba;Simbainsecure.cyb;Simba;OU=LionKing,OU=Disney,DC=insecure,DC=cyb;Hogentpass123!;$true;$false;Lion king characters
+Nala;Nala;Nala;Nalainsecure.cyb;Nala;OU=LionKing,OU=Disney,DC=insecure,DC=cyb;Hogentpass123!;$true;$false;Lion king characters
+Timon;Timon;Timon;Timoninsecure.cyb;Timon;OU=LionKing,OU=Disney,DC=insecure,DC=cyb;Hogentpass123!;$true;$false;Lion king characters
+Pumbaa;Pumbaa;Pumbaa;Pumbaainsecure.cyb;Pumbaa;OU=LionKing,OU=Disney,DC=insecure,DC=cyb;Hogentpass123!;$true;$false;Lion king characters
+Scar;Scar;Scar;Scarinsecure.cyb;Scar;OU=LionKing,OU=Disney,DC=insecure,DC=cyb;Hogentpass123!;$true;$false;Lion king characters
+Mufasa;Mufasa;Mufasa;Mufasainsecure.cyb;Mufasa;OU=LionKing,OU=Disney,DC=insecure,DC=cyb;Hogentpass123!;$true;$false;Lion king characters
+Zazu;Zazu;Zazu;Zazuinsecure.cyb;Zazu;OU=LionKing,OU=Disney,DC=insecure,DC=cyb;Hogentpass123!;$true;$false;Lion king characters
+Rafiki;Rafiki;Rafiki;Rafikiinsecure.cyb;Rafiki;OU=LionKing,OU=Disney,DC=insecure,DC=cyb;Hogentpass123!;$true;$false;Lion king characters
+Sarabi;Sarabi;Sarabi;Sarabiinsecure.cyb;Sarabi;OU=LionKing,OU=Disney,DC=insecure,DC=cyb;Hogentpass123!;$true;$false;Lion king characters
+Sarafina;Sarafina;Sarafina;Sarafinainsecure.cyb;Sarafina;OU=LionKing,OU=Disney,DC=insecure,DC=cyb;Hogentpass123!;$true;$false;Lion king characters
+Shenzi;Shenzi;Shenzi;Shenziinsecure.cyb;Shenzi;OU=LionKing,OU=Disney,DC=insecure,DC=cyb;Hogentpass123!;$true;$false;Lion king characters
+Banzai;Banzai;Banzai;Banzaiinsecure.cyb;Banzai;OU=LionKing,OU=Disney,DC=insecure,DC=cyb;Hogentpass123!;$true;$false;Lion king characters
+Ed;Ed;Ed;Edinsecure.cyb;Ed ;OU=LionKing,OU=Disney,DC=insecure,DC=cyb;Hogentpass123!;$true;$false;Lion king characters
+Gopher;Gopher;Gopher;Gopherinsecure.cyb;Gopher;OU=LionKing,OU=Disney,DC=insecure,DC=cyb;Hogentpass123!;$true;$false;Lion king characters

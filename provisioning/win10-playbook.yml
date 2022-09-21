@@ -1,0 +1,62 @@
+---
+- hosts: win10
+  vars:
+    win10_hostname: "employee2"
+    domain_name: "insecure.cyb"
+    domain_admin: 'vagrant@insecure.cyb'
+    domain_admin_pass: 'vagrant'
+  gather_facts: no
+  tasks:
+  - name: Test connectivity from ansible to windows10
+    ansible.windows.win_ping:
+
+  - name: Disable firewall for Domain, Public and Private profiles
+    win_firewall:
+      state: disabled
+      profiles:
+      - Domain
+      - Private
+      - Public
+
+  - name: Create wip directory to copy files to
+    ansible.windows.win_file:
+      path: C:\wip
+      state: directory
+  
+  - name: Copy Sched task script for ET phone home
+    ansible.windows.win_copy:
+      src: rawfiles/sched-task.ps1
+      dest: C:\wip\sched-task.ps1
+
+  - name: Copy Phone home script for ET phone home
+    ansible.windows.win_copy:
+      src: rawfiles/phone-home.ps1
+      dest: C:\windows\phone-home.ps1
+
+  - name: Download wireshark installer to wip
+    ansible.windows.win_get_url:
+      url: https://1.eu.dl.wireshark.org/win64/Wireshark-win64-3.6.8.exe
+      dest: C:\wip\
+
+  - name: Download nmap installer to wip
+    ansible.windows.win_get_url:
+      url: https://nmap.org/dist/nmap-7.93-setup.exe
+      dest: C:\wip\
+
+#  - name: Add win10 to domain
+#    ansible.windows.win_domain_membership:
+#      dns_domain_name: "{{ domain_name }}"
+#      hostname: "{{ win10_hostname }}"
+#      domain_admin_user: "{{ domain_admin }}"
+#      domain_admin_password: "{{ domain_admin_pass }}"
+#      state: domain
+#    register: domain_state
+#
+#
+#  - name: Reboot
+#    ansible.windows.win_reboot:
+#    when: domain_state.reboot_required
+
+## Chicken/Egg problem --> cannot be contacted, first need to fix ip
+## New-NetRoute -DestinationPrefix "172.30.42.0/26" -InterfaceIndex <nr> -NextHop 172.30.128.1
+# TODO rsat tools and not via choco :(
