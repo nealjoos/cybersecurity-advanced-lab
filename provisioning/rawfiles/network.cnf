@@ -1,0 +1,8 @@
+# Mariadb network settings
+#
+# Ansible managed
+
+[mysqld]
+bind_address=0.0.0.0
+max_connections = 100000
+max_connect_errors = 10000

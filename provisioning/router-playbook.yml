@@ -11,9 +11,9 @@
             name: firewalld
             enabled: yes
             state: started
-      - ansible.builtin.shell: |
-            firewall-cmd --permanent --change-zone=enp0s8 --zone=external
-            firewall-cmd --reload
+      #- ansible.builtin.shell: |
+      #      firewall-cmd --permanent --change-zone=enp0s8 --zone=external
+      #      firewall-cmd --reload
       - ansible.builtin.dnf:
             name: bind
             state: present

@@ -17,16 +17,40 @@
       - Domain
       - Private
       - Public
-  
-  - name: Copy Sched task script for ET phone home
-    ansible.windows.win_copy:
-      src: rawfiles/sched-task.ps1
-      dest: C:\wip\sched-task.ps1
 
-  - name: Copy Phone home script for ET phone home
+  - name: Create wip directory to copy files to
+    ansible.windows.win_file:
+      path: C:\wip
+      state: directory
+  
+  - name: Copy Sched task script and phone home script
     ansible.windows.win_copy:
-      src: rawfiles/phone-home.ps1
-      dest: C:\windows\phone-home.ps1
+      src: rawfiles/winclient
+      dest: C:\wip\
+
+  - name: Download wireshark installer to wip
+    ansible.windows.win_get_url:
+      url: https://1.eu.dl.wireshark.org/win64/Wireshark-win64-3.6.8.exe
+      dest: C:\wip\
+
+  - name: Download nmap installer to wip
+    ansible.windows.win_get_url:
+      url: https://nmap.org/dist/nmap-7.93-setup.exe
+      dest: C:\wip\
+
+  - name: Add static route for server network
+    community.windows.win_route:
+      destination: 172.30.42.0/26
+      gateway: 172.30.128.126
+      metric: 1
+      state: present
+
+  - name: Add static route for external (red) network
+    community.windows.win_route:
+      destination: 192.168.56.0/24
+      gateway: 172.30.128.126
+      metric: 1
+      state: present
 
 #  - name: Add win10 to domain
 #    ansible.windows.win_domain_membership:

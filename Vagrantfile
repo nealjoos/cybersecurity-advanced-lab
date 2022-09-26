@@ -8,14 +8,15 @@ Vagrant.configure("2") do |config|
     host.vm.box = "almalinux/9"
     host.vm.hostname = "router"
 
-    host.vm.network "private_network", type: "dhcp"
-    host.vm.network "private_network", ip: "172.30.42.1", netmask: "255.255.255.192", virtualbox__intnet: "servers"
-    host.vm.network "private_network", ip: "172.30.128.1", netmask: "255.255.255.128", virtualbox__intnet: "employees"
+    #host.vm.network "private_network", type: "dhcp"
+    host.vm.network "private_network", ip: "192.168.56.254", netmask: "255.255.255.0", name: "VirtualBox Host-Only Ethernet Adapter #2"
+    host.vm.network "private_network", ip: "172.30.42.62", netmask: "255.255.255.192", virtualbox__intnet: "servers"
+    host.vm.network "private_network", ip: "172.30.128.126", netmask: "255.255.255.128", virtualbox__intnet: "employees"
 
     host.vm.provider :virtualbox do |v|
       v.name = "router"
       v.cpus = "1"
-      v.memory = "1024"
+      v.memory = "512"
     end
 
 #    host.vm.provision "ansible", host_key_checking: true do |ansible|
@@ -24,6 +25,26 @@ Vagrant.configure("2") do |config|
   end
 
   ### servers ##################################################################
+
+
+
+  config.vm.define "dc" do |host|
+    host.vm.box = "gusztavvargadr/windows-server-core"
+    host.vm.hostname = "dc"
+
+    host.vm.network "private_network", ip: "172.30.42.4", netmask: "255.255.255.192", virtualbox__intnet: "servers"
+
+    host.vm.provider :virtualbox do |v|
+      v.name = "dc"
+      v.cpus = "1"
+      v.memory = "1024"
+    end
+    
+#    host.vm.provision "ansible", host_key_checking: true do |ansible|
+#      ansible.playbook = "provisioning/dc-playbook.yml"
+#    end
+
+  end
 
   config.vm.define "web" do |host|
     host.vm.box = "almalinux/9"
@@ -34,7 +55,7 @@ Vagrant.configure("2") do |config|
     host.vm.provider :virtualbox do |v|
       v.name = "web"
       v.cpus = "1"
-      v.memory = "1024"
+      v.memory = "512"
     end
 
 #    host.vm.provision "ansible", host_key_checking: true do |ansible|
@@ -51,30 +72,12 @@ Vagrant.configure("2") do |config|
     host.vm.provider :virtualbox do |v|
       v.name = "database"
       v.cpus = "1"
-      v.memory = "1024"
+      v.memory = "512"
     end
 
 #    host.vm.provision "ansible", host_key_checking: true do |ansible|
 #      ansible.playbook = "provisioning/database-playbook.yml"
 #    end
-  end
-
-  config.vm.define "dc" do |host|
-    host.vm.box = "gusztavvargadr/windows-server-core"
-    host.vm.hostname = "dc"
-
-    host.vm.network "private_network", ip: "172.30.42.4", netmask: "255.255.255.192", virtualbox__intnet: "servers"
-
-    host.vm.provider :virtualbox do |v|
-      v.name = "dc"
-      v.cpus = "1"
-      v.memory = "2048"
-    end
-    
-#    host.vm.provision "ansible", host_key_checking: true do |ansible|
-#      ansible.playbook = "provisioning/dc-playbook.yml"
-#    end
-
   end
 
   ### employees ################################################################
@@ -88,12 +91,28 @@ Vagrant.configure("2") do |config|
     host.vm.provider :virtualbox do |v|
       v.name = "employee1"
       v.cpus = "1"
-      v.memory = "2048"
+      v.memory = "1024"
     end
 
 #    host.vm.provision "ansible", host_key_checking: true do |ansible|
 #      ansible.playbook = "provisioning/employee1-playbook.yml"
 #    end
+  end
+
+
+  ## outside ##################################################################
+
+  config.vm.define "red" do |host|
+    host.vm.box = "kalilinux/rolling"
+    host.vm.hostname = "red"
+    
+    host.vm.network "private_network", ip: "192.168.56.199", netmask: "255.255.255.0", name: "VirtualBox Host-Only Ethernet Adapter #2"
+
+    host.vm.provider :virtualbox do |v|
+      v.name = "red"
+      v.cpus = "1"
+      v.memory = "1024"
+    end
   end
 
   config.vm.define "employee2" do |host|
@@ -109,20 +128,6 @@ Vagrant.configure("2") do |config|
     end
   end
 
-  ## outside ##################################################################
-
-#   config.vm.define "red" do |host|
-#     host.vm.box = "kalilinux/rolling"
-#     host.vm.hostname = "red"
-
-#     host.vm.network "private_network", type: "dhcp"
-
-#     host.vm.provider :virtualbox do |v|
-#       v.name = "red"
-#       v.cpus = "1"
-#       v.memory = "2048"
-#     end
-#   end
 
 end
 

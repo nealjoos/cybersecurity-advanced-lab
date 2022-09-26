@@ -10,8 +10,8 @@
           routes:
               config:
                   - destination: 172.30.128.0/25
-                    next-hop-address: 172.30.42.1
+                    next-hop-address: 172.30.42.62
                     next-hop-interface: enp0s8
                   - destination: 192.168.56.0/24
-                    next-hop-address: 172.30.42.1
+                    next-hop-address: 172.30.42.62
                     next-hop-interface: enp0s8
