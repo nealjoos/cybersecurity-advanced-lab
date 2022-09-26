@@ -128,6 +128,20 @@ Vagrant.configure("2") do |config|
     end
   end
 
+  ## outside ##################################################################
+
+  #config.vm.define "red" do |host|
+  #  host.vm.box = "kalilinux/rolling"
+  #  host.vm.hostname = "red"
+  #
+  #  host.vm.network "private_network", type: "dhcp"
+  #
+  #  host.vm.provider :virtualbox do |v|
+  #    v.name = "red"
+  #    v.cpus = "1"
+  #    v.memory = "1024"
+  #  end
+  #end
 
 end
 
