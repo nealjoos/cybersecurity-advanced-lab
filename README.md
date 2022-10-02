@@ -53,70 +53,57 @@ VirtualBox also provides a management network, so the hosts can download softwar
 
 ## Machines overview
 
-Name      | Network   | IP           | prefixlength | default gateway | Remarks
---------- | --------- | ------------ | ------------ | --------------- | ---
-router    | uplink    | DHCP         | 24           | ???             | Router of the environment
-router    | servers   | 172.30.42.1  | 26           | ???             | ^
-router    | employees | 172.30.128.1 | 25           | ???             | ^
-web       | servers   | 172.30.42.2  | 26           | 172.30.42.1     | Webserver
-database  | servers   | 172.30.42.3  | 26           | 172.30.42.1     | Lightweight MySQL Database
-employee1 | employees | DHCP         | 25           | 172.30.128.1    | Ubuntu
-red       | employees | DHCP         | 25           | 172.30.128.1    | Kali outside the network
-dc        | servers   | 172.30.42.4  | 26           | 172.30.42.1     | Windows AD server core with domain
-employee2 | employees | DHCP         | 25           | 172.30.128.1    | Windows 10 client (domain joined) 
+Name      | Network   | IP             | prefixlength | default gateway | Remarks
+--------- | --------- | -------------- | ------------ | --------------- | ---
+router    | uplink    | 10.0.2.15      | 24           | 10.0.2.2        | Default virtualbox nat
+router    | servers   | 172.30.42.62   | 26           | nvt             | 
+router    | employees | 172.30.128.126 | 25           | nvt             | 
+router    | host-only | 192.168.56.254 | 24           | nvt             | <-- interface to ssh too from host
+web       | servers   | 172.30.42.2    | 26           | 172.30.42.62    | Webserver
+database  | servers   | 172.30.42.3    | 26           | 172.30.42.62    | Lightweight MySQL Database
+employee1 | employees | DHCP           | 25           | 172.30.128.126  | Ubuntu
+red       | host-only | TODO student   | 25           | 172.30.128.126  | Kali outside the network (at the beginning), ip + routing is a todo for student
+dc        | servers   | 172.30.42.4    | 26           | 172.30.42.62    | Windows AD server core with domain
+employee2 | employees | DHCP           | 25           | 172.30.128.126  | Windows 10 client (domain joined) 
 
 
-# Vragen voor de omgeving
+# Big overview / Planning
 
-## Les 1 
+## Les 1
 
-Maak een netwerkschema van de gegeven opstelling. Probeer volgende vragen te beantwoorden en mee te nemen in je overzicht: 
+- Installatie van de omgeving
+- Herhaling DNS + Wireshark met een gegeven capture van de omgeving
+- Huiswerk: kali installeren
 
-- Welke machines kunnen met elkaar communiceren?
-- Wat is de default gateway van elke machine?
-- Wat is de dns-server van elke machine?
-- Welke machines hebben een statisch IP en welke gebruiken DHCP? 
-- Welke users bestaan op welke machines?
-- Wat is het doel (welke processen zijn essentieel) van elke machine?
-- Onderzoek of de DNS server kwetsbaar is voor een DNS Zone Transfer aanval. Wat houdt deze aanval precies in? Indien nodig, probeer de server zodanig te configureren dat deze aanval niet meer kan. Documenteer deze update.
+## Les 2
 
-## Les 2 
-
-(Gegeven, informatie over de omgeving: Users + Groups + Processen + Doelen)
-
-- Gebruik Wireshark om na te gaan wat voor verkeer er passief op het netwerk passeert. Documenteer je bevindingen en ga na welke zaken je beter kan beveiligen of updaten. 
-- Gebruik nmap om na te gaan welke poorten open staan op de machines. Zijn deze allemaal nodig en zoja op welke interfaces moeten ze beschikbaar zijn? Documenteer je bevindingen en ga na welke zaken je beter kan beveiligen.
-- Configuur de router zodanig dat de functionaliteit van het netwerk niet verloren gaat maar dat het netwerk beter gesegmenteerd is. Maak eventueel gebruik van zoning. Welke machines moeten bereikbaar zijn van buitenaf en welke niet?
-
+- Kali: ip setup + routering zodat kali vanaf host-only network aan alles kan
+- Nmap vanaf de kali naar de machines, hydra als demo, smbclient
+- DOEL: zorg ervoor dat de kali vanaf host-only enkel nog kan surven naar www.insecure.cyb (web op poort 80/443) (en daardoor dus ook DC 53) rest moet geblokt worden met nftables
 
 ## Les 3 
 
-- Zet een nieuwe virtuele machine op die dient als "Honeypot" om je webserver beter te beschermen. Kies gerust welke technology je hier voor wilt gebruiken. Een suggestie is bijvoorbeeld https://github.com/cowrie/cowrie 
-- Zorg dat de SSH server op de webserver gebruik maakt van een andere poort dan 22. Gebruik SSH port forwarding om vervolgens poort 22 op de webserver te koppelen aan een poort van de honeypot. 
+- Configureer sysmon op win10
 
+(optioneel lab: veel ram/CPU nodig)
+- Installeer full Security Onion en zorg dat router en win10 zijn logs naar SO shipped (filebeat en winlogbeat)
+
+- Installeer lichte security onion en importeer de pcap.
 
 ## Les 4 
 
-- Buffer / Gastles
+- Gastles 
 
 
 ## Les 5
 
-- Laat enkel de Router, de domein controller en de webserver draaien. Installeer Splunk in een nieuwe virtuele machine en configuur de Windows server en de webserver zodanig dat alle commando's die uitgevoerd worden op de machines gelogt en geraadpleegd kunnen worden in splunk. Documenteer goed hoe je dit gedaan hebt. 
+- Installeer een nieuwe vm OF configureer db (of ubuntu) als honeypot
+- https://github.com/cowrie/cowrie 
+- Zorg dat de SSH server op de webserver gebruik maakt van een andere poort dan 22. Gebruik SSH port forwarding om vervolgens poort 22 op de webserver te koppelen aan een poort van de honeypot. 
 
-OF
+## Les 6 
 
-- Splunk skippen en houden voor security onion, hier een vrij theorie/inputles van maken met de concepten en de praktische plaatsen waar logs gestored worden en waarom we wat doorsturen naar zaken als splunk/ELK. Dit is misschien beter om concepteel het goed te snappen maar dan moeten lessen 6 buffer en les 7 wisselen.
-
-- Test dit uit door <TODO use case>
-
-## Les 6
-
-- Buffer
-
-## Les 7 
-
-- Bouw een SOC uit door security onion te installeren in een nieuwe virtuele machine.
+Buffer
 
 ## Users
 * Thomas Clauwaert
