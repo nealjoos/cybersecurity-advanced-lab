@@ -83,12 +83,10 @@ employee2 | employees | DHCP           | 25           | 172.30.128.126  | Window
 
 ## Les 3 
 
-- Configureer sysmon op win10
-
+- Installeer ELK in afzonderlijke vm (neem snapshot na clean install voor gastles)
+- Experimenteer met ELK door de apache log in lezen van web (eerst configureren) 
 (optioneel lab: veel ram/CPU nodig)
 - Installeer full Security Onion en zorg dat router en win10 zijn logs naar SO shipped (filebeat en winlogbeat)
-
-- Installeer lichte security onion en importeer de pcap.
 
 ## Les 4 
 
@@ -97,11 +95,22 @@ employee2 | employees | DHCP           | 25           | 172.30.128.126  | Window
 
 ## Les 5
 
+- Reset ELK naar clean install
+- Suricata op de rouder als IDS/IPS 
+- Sysmon op windows 10 (demo psexec)
+- Ship logs naar de ELK
+
+## Les 6
+
+Buffer
+
+## Les 7
+
 - Installeer een nieuwe vm OF configureer db (of ubuntu) als honeypot
 - https://github.com/cowrie/cowrie 
 - Zorg dat de SSH server op de webserver gebruik maakt van een andere poort dan 22. Gebruik SSH port forwarding om vervolgens poort 22 op de webserver te koppelen aan een poort van de honeypot. 
 
-## Les 6 
+## Les 8
 
 Buffer
 
