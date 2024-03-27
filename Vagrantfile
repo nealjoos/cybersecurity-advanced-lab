@@ -1,147 +1,104 @@
-ENV['VAGRANT_NO_PARALLEL'] = 'yes'
+# ENV['VAGRANT_NO_PARALLEL'] = 'yes'
+
+# First create the following network in VirtualBox: 192.168.62.0/24 (fake internet)
 
 Vagrant.configure("2") do |config|
 
-  ### router ###################################################################
-
-  config.vm.define "router" do |host|
-    host.vm.box = "almalinux/9"
-    host.vm.hostname = "router"
-
-    #host.vm.network "private_network", type: "dhcp"
-    host.vm.network "private_network", ip: "192.168.56.254", netmask: "255.255.255.0", name: "VirtualBox Host-Only Ethernet Adapter #2"
-    host.vm.network "private_network", ip: "172.30.42.62", netmask: "255.255.255.192", virtualbox__intnet: "servers"
-    host.vm.network "private_network", ip: "172.30.128.126", netmask: "255.255.255.128", virtualbox__intnet: "employees"
-
-    host.vm.provider :virtualbox do |v|
-      v.name = "router"
-      v.cpus = "1"
-      v.memory = "512"
+    name = "companyrouter"
+    config.vm.define name do |host|
+      host.vm.box = "almalinux/9"
+      host.vm.hostname = name
+  
+      host.vm.network "private_network", ip: "172.30.255.254", netmask: "255.255.0.0", virtualbox__intnet: "internal-company"
+      host.vm.network "private_network", ip: "192.168.62.253", netmask: "255.255.255.0", name: "vboxnet1"
+  
+      host.vm.provider :virtualbox do |v|
+        v.name = name
+        v.cpus = "1"
+        v.memory = "2048"
+      end
     end
-
-#    host.vm.provision "ansible", host_key_checking: true do |ansible|
-#      ansible.playbook = "provisioning/router-playbook.yml"
-#    end
-  end
-
-  ### servers ##################################################################
-
-
-
-  config.vm.define "dc" do |host|
-    host.vm.box = "gusztavvargadr/windows-server-core"
-    host.vm.hostname = "dc"
-
-    host.vm.network "private_network", ip: "172.30.42.4", netmask: "255.255.255.192", virtualbox__intnet: "servers"
-
-    host.vm.provider :virtualbox do |v|
-      v.name = "dc"
-      v.cpus = "1"
-      v.memory = "1024"
+  
+  #   config.vm.define "dc" do |host|
+  #     host.vm.box = "gusztavvargadr/windows-server-core"
+  #     host.vm.hostname = "dc"
+  
+  #     host.vm.network "private_network", ip: "172.30.0.4", netmask: "255.255.255.0", virtualbox__intnet: "internal-company"
+  
+  #     host.vm.provider :virtualbox do |v|
+  #       v.name = "dc"
+  #       v.cpus = "2"
+  #       v.memory = "4096"
+  #     end
+  #   end
+  
+  #   config.vm.define "employee1" do |host|
+  #     host.vm.box = "gusztavvargadr/windows-11"
+  #     host.vm.hostname = "employee1"
+  
+  #     host.vm.network "private_network", type: "dhcp", virtualbox__intnet: "internal-company"
+  
+  #     host.vm.provider :virtualbox do |v|
+  #       v.name = "employee1"
+  #       v.cpus = "2"
+  #       v.memory = "4096"
+  #     end
+  #   end
+  
+    config.vm.define "web" do |host|
+      host.vm.box = "almalinux/9"
+      host.vm.hostname = "web"
+  
+      host.vm.network "private_network", ip: "172.30.0.10", netmask: "255.255.255.0", virtualbox__intnet: "internal-company"
+  
+      host.vm.provider :virtualbox do |v|
+        v.name = "web"
+        v.cpus = "1"
+        v.memory = "2048"
+      end
+  
     end
-    
-#    host.vm.provision "ansible", host_key_checking: true do |ansible|
-#      ansible.playbook = "provisioning/dc-playbook.yml"
-#    end
-
-  end
-
-  config.vm.define "web" do |host|
-    host.vm.box = "almalinux/9"
-    host.vm.hostname = "web"
-
-    host.vm.network "private_network", ip: "172.30.42.2", netmask: "255.255.255.192", virtualbox__intnet: "servers"
-
-    host.vm.provider :virtualbox do |v|
-      v.name = "web"
-      v.cpus = "1"
-      v.memory = "512"
+  
+    config.vm.define "database" do |host|
+      host.vm.box = "almalinux/9"
+      host.vm.hostname = "database"
+  
+      host.vm.network "private_network", ip: "172.30.0.15", netmask: "255.255.255.0", virtualbox__intnet: "internal_network"
+  
+      host.vm.provider :virtualbox do |v|
+        v.name = "database"
+        v.cpus = "1"
+        v.memory = "2048"
+      end
     end
+  
+    config.vm.define "isprouter" do |host|
+      host.vm.box = "generic/alpine318"
+      host.vm.hostname = "isprouter"
+  
+      host.vm.network "private_network", ip: "192.168.62.254", netmask: "255.255.255.0", name: "vboxnet1"
+  
+      host.vm.provider :virtualbox do |v|
+        v.name = "isprouter"
+        v.cpus = "1"
+        v.memory = "2048"
+      end
 
-#    host.vm.provision "ansible", host_key_checking: true do |ansible|
-#      ansible.playbook = "provisioning/web-playbook.yml"
-#    end
-  end
-
-  config.vm.define "database" do |host|
-    host.vm.box = "almalinux/9"
-    host.vm.hostname = "database"
-
-    host.vm.network "private_network", ip: "172.30.42.3", netmask: "255.255.255.192", virtualbox__intnet: "servers"
-
-    host.vm.provider :virtualbox do |v|
-      v.name = "database"
-      v.cpus = "1"
-      v.memory = "512"
+      config.vm.provision "shell", inline: "apk --no-cache add python3"
     end
-
-#    host.vm.provision "ansible", host_key_checking: true do |ansible|
-#      ansible.playbook = "provisioning/database-playbook.yml"
-#    end
-  end
-
-  ### employees ################################################################
-
-  config.vm.define "employee1" do |host|
-    host.vm.box = "ubuntu/jammy64"
-    host.vm.hostname = "employee1"
-
-    host.vm.network "private_network", type: "dhcp", virtualbox__intnet: "employees"
-
-    host.vm.provider :virtualbox do |v|
-      v.name = "employee1"
-      v.cpus = "1"
-      v.memory = "1024"
-    end
-
-#    host.vm.provision "ansible", host_key_checking: true do |ansible|
-#      ansible.playbook = "provisioning/employee1-playbook.yml"
-#    end
-  end
-
-
-  ## outside ##################################################################
-
-  config.vm.define "red" do |host|
-    host.vm.box = "kalilinux/rolling"
-    host.vm.hostname = "red"
-    
-    host.vm.network "private_network", ip: "192.168.56.199", netmask: "255.255.255.0", name: "VirtualBox Host-Only Ethernet Adapter #2"
-
-    host.vm.provider :virtualbox do |v|
-      v.name = "red"
-      v.cpus = "1"
-      v.memory = "1024"
+  
+    config.vm.define "red" do |host|
+      host.vm.box = "kalilinux/rolling"
+      host.vm.hostname = "red"
+  
+      host.vm.network "private_network", ip: "192.168.62.100", netmask: "255.255.255.0", name: "vboxnet1"
+  
+      host.vm.provider :virtualbox do |v|
+        v.name = "red"
+        v.cpus = "2"
+        v.memory = "2048"
+      end
     end
   end
-
-  config.vm.define "employee2" do |host|
-    host.vm.box = "gusztavvargadr/windows-10"
-    host.vm.hostname = "employee2"
-
-    host.vm.network "private_network", type: "dhcp", virtualbox__intnet: "employees"
-
-    host.vm.provider :virtualbox do |v|
-      v.name = "employee2"
-      v.cpus = "1"
-      v.memory = "2048"
-    end
-  end
-
-  ## outside ##################################################################
-
-  #config.vm.define "red" do |host|
-  #  host.vm.box = "kalilinux/rolling"
-  #  host.vm.hostname = "red"
-  #
-  #  host.vm.network "private_network", type: "dhcp"
-  #
-  #  host.vm.provider :virtualbox do |v|
-  #    v.name = "red"
-  #    v.cpus = "1"
-  #    v.memory = "1024"
-  #  end
-  #end
-
-end
-
+  
+  
