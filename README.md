@@ -35,7 +35,7 @@ nwdiag {
         address = "192.168.62.0/24";
         description = "fake internet";
 
-        companyrouter [address = "172.30.255.254"];
+        companyrouter [address = "192.168.62.253"];
         isprouter [address = "192.168.62.254"];
         red [address = "192.168.62.100"];
         your_laptop [address = "dhcp"];
@@ -69,4 +69,43 @@ nwdiag {
     -   Name: `vboxnet1` (when different, change this in `Vagrantfile`)
     -   IP range: 192.168.62.0/24
 
-2. `vagrant up --parallel`
+1. `vagrant up --parallel`
+
+1. Disable all the NAT connections added by vagrant: `./disable-nat.sh`
+
+1. Test connectivity with Ansible:
+
+    ```console
+    $ ansible fake_internet --inventory inventory.yml --module-name ping
+    red | SUCCESS => {
+        "ansible_facts": {
+            "discovered_interpreter_python": "/usr/bin/python3"
+        },
+        "changed": false,
+        "ping": "pong"
+    }
+    [WARNING]: Platform linux on host isprouter is using the discovered Python interpreter at /usr/bin/python3.11, but future installation of another Python
+    interpreter could change the meaning of that path. See https://docs.ansible.com/ansible-core/2.16/reference_appendices/interpreter_discovery.html for more
+    information.
+    isprouter | SUCCESS => {
+        "ansible_facts": {
+            "discovered_interpreter_python": "/usr/bin/python3.11"
+        },
+        "changed": false,
+        "ping": "pong"
+    }
+    homerouter | SUCCESS => {
+        "ansible_facts": {
+            "discovered_interpreter_python": "/usr/bin/python3"
+        },
+        "changed": false,
+        "ping": "pong"
+    }
+    companyrouter | SUCCESS => {
+        "ansible_facts": {
+            "discovered_interpreter_python": "/usr/bin/python3"
+        },
+        "changed": false,
+        "ping": "pong"
+    }
+    ```

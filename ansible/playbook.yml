@@ -1,9 +1,22 @@
-- name: My first play
-  hosts: fake_internet
-  tasks:
-      - name: Ping my hosts
-        ansible.builtin.ping:
+# - name: My first play
+#   hosts: fake_internet
+#   tasks:
+#       - name: Ping my hosts
+#         ansible.builtin.ping:
 
-      - name: Print message
-        ansible.builtin.debug:
-            msg: Hello world
+#       - name: Print message
+#         ansible.builtin.debug:
+#             msg: Hello world
+
+- name: Add static route to ISP router
+  hosts: isprouter
+  become: yes
+  tasks:
+    - name: Add static routes
+      lineinfile:
+        path: /etc/network/interfaces
+        line: "up ip route add 172.30.0.0/16 via 192.168.57.253"
+        state: present
+
+    - name: Restart network service
+      command: ifdown eth1 && ifup eth1
