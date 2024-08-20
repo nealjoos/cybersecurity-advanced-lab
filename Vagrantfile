@@ -1,104 +1,113 @@
 # ENV['VAGRANT_NO_PARALLEL'] = 'yes'
 
-# First create the following network in VirtualBox: 192.168.62.0/24 (fake internet)
+HOST_ONLY_NETWORK = "vboxnet1"
 
 Vagrant.configure("2") do |config|
+    config.vm.define "companyrouter" do |host|
+        host.vm.box = "almalinux/9"
+        host.vm.hostname = "companyrouter"
 
-    name = "companyrouter"
-    config.vm.define name do |host|
-      host.vm.box = "almalinux/9"
-      host.vm.hostname = name
-  
-      host.vm.network "private_network", ip: "172.30.255.254", netmask: "255.255.0.0", virtualbox__intnet: "internal-company"
-      host.vm.network "private_network", ip: "192.168.62.253", netmask: "255.255.255.0", name: "vboxnet1"
-  
-      host.vm.provider :virtualbox do |v|
-        v.name = name
-        v.cpus = "1"
-        v.memory = "2048"
-      end
+        host.vm.network "private_network", ip: "172.30.255.254", netmask: "255.255.0.0", virtualbox__intnet: "internal-company-lan"
+        host.vm.network "private_network", ip: "192.168.62.253", netmask: "255.255.255.0", name: HOST_ONLY_NETWORK
+
+        host.vm.provider :virtualbox do |v|
+            v.name = "companyrouter"
+            v.cpus = "1"
+            v.memory = "2048"
+        end
     end
-  
-  #   config.vm.define "dc" do |host|
-  #     host.vm.box = "gusztavvargadr/windows-server-core"
-  #     host.vm.hostname = "dc"
-  
-  #     host.vm.network "private_network", ip: "172.30.0.4", netmask: "255.255.255.0", virtualbox__intnet: "internal-company"
-  
-  #     host.vm.provider :virtualbox do |v|
-  #       v.name = "dc"
-  #       v.cpus = "2"
-  #       v.memory = "4096"
-  #     end
-  #   end
-  
-  #   config.vm.define "employee1" do |host|
-  #     host.vm.box = "gusztavvargadr/windows-11"
-  #     host.vm.hostname = "employee1"
-  
-  #     host.vm.network "private_network", type: "dhcp", virtualbox__intnet: "internal-company"
-  
-  #     host.vm.provider :virtualbox do |v|
-  #       v.name = "employee1"
-  #       v.cpus = "2"
-  #       v.memory = "4096"
-  #     end
-  #   end
-  
+
+    config.vm.define "dns" do |host|
+        host.vm.box = "almalinux/9"
+        host.vm.hostname = "dns"
+        
+        host.vm.network "private_network", ip: "172.30.0.4", netmask: "255.255.255.0", virtualbox__intnet: "internal-company-lan"
+        
+        host.vm.provider :virtualbox do |v|
+            v.name = "dns"
+            v.cpus = "1"
+            v.memory = "2048"
+        end
+    end
+
     config.vm.define "web" do |host|
-      host.vm.box = "almalinux/9"
-      host.vm.hostname = "web"
-  
-      host.vm.network "private_network", ip: "172.30.0.10", netmask: "255.255.255.0", virtualbox__intnet: "internal-company"
-  
-      host.vm.provider :virtualbox do |v|
-        v.name = "web"
-        v.cpus = "1"
-        v.memory = "2048"
-      end
-  
-    end
-  
-    config.vm.define "database" do |host|
-      host.vm.box = "almalinux/9"
-      host.vm.hostname = "database"
-  
-      host.vm.network "private_network", ip: "172.30.0.15", netmask: "255.255.255.0", virtualbox__intnet: "internal_network"
-  
-      host.vm.provider :virtualbox do |v|
-        v.name = "database"
-        v.cpus = "1"
-        v.memory = "2048"
-      end
-    end
-  
-    config.vm.define "isprouter" do |host|
-      host.vm.box = "generic/alpine318"
-      host.vm.hostname = "isprouter"
-  
-      host.vm.network "private_network", ip: "192.168.62.254", netmask: "255.255.255.0", name: "vboxnet1"
-  
-      host.vm.provider :virtualbox do |v|
-        v.name = "isprouter"
-        v.cpus = "1"
-        v.memory = "2048"
-      end
+        host.vm.box = "almalinux/9"
+        host.vm.hostname = "web"
 
-      config.vm.provision "shell", inline: "apk --no-cache add python3"
+        host.vm.network "private_network", ip: "172.30.0.10", netmask: "255.255.255.0", virtualbox__intnet: "internal-company-lan"
+
+        host.vm.provider :virtualbox do |v|
+            v.name = "web"
+            v.cpus = "1"
+            v.memory = "2048"
+        end
     end
-  
+
+    config.vm.define "database" do |host|
+        host.vm.box = "almalinux/9"
+        host.vm.hostname = "database"
+
+        host.vm.network "private_network", ip: "172.30.0.15", netmask: "255.255.255.0", virtualbox__intnet: "internal_network"
+
+        host.vm.provider :virtualbox do |v|
+            v.name = "database"
+            v.cpus = "1"
+            v.memory = "2048"
+        end
+    end
+
+    config.vm.define "isprouter" do |host|
+        host.vm.box = "generic/alpine318"
+        host.vm.hostname = "isprouter"
+
+        host.vm.network "private_network", ip: "192.168.62.254", netmask: "255.255.255.0", name: HOST_ONLY_NETWORK
+
+        host.vm.provider :virtualbox do |v|
+            v.name = "isprouter"
+            v.cpus = "1"
+            v.memory = "1024"
+        end
+
+        host.vm.provision "shell", inline: "apk --no-cache add python3" # For ansible
+    end
+
     config.vm.define "red" do |host|
-      host.vm.box = "kalilinux/rolling"
-      host.vm.hostname = "red"
-  
-      host.vm.network "private_network", ip: "192.168.62.100", netmask: "255.255.255.0", name: "vboxnet1"
-  
-      host.vm.provider :virtualbox do |v|
-        v.name = "red"
-        v.cpus = "2"
-        v.memory = "2048"
-      end
+        host.vm.box = "kalilinux/rolling"
+        host.vm.hostname = "red"
+    
+        host.vm.network "private_network", ip: "192.168.62.100", netmask: "255.255.255.0", name: HOST_ONLY_NETWORK
+    
+        host.vm.provider :virtualbox do |v|
+            v.name = "red"
+            v.cpus = "1"
+            v.memory = "2048"
+        end
     end
-  end
-  
-  
+
+    config.vm.define "homerouter" do |host|
+        host.vm.box = "almalinux/9"
+        host.vm.hostname = "homerouter"
+    
+        host.vm.network "private_network", ip: "192.168.62.42", netmask: "255.255.255.0", name: HOST_ONLY_NETWORK
+        host.vm.network "private_network", ip: "172.10.10.254", netmask: "255.255.255.0", virtualbox__intnet: "employee-home-lan"
+
+        host.vm.provider :virtualbox do |v|
+            v.name = "homerouter"
+            v.cpus = "1"
+            v.memory = "2048"
+        end
+    end
+
+    config.vm.define "employee" do |host|
+        host.vm.box = "almalinux/9"
+        host.vm.hostname = "employee"
+    
+        host.vm.network "private_network", ip: "172.10.10.123", netmask: "255.255.255.0", virtualbox__intnet: "employee-home-lan"
+
+        host.vm.provider :virtualbox do |v|
+            v.name = "employee"
+            v.cpus = "1"
+            v.memory = "2048"
+        end
+    end
+end
