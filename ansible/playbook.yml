@@ -1,22 +1,97 @@
-# - name: My first play
-#   hosts: fake_internet
-#   tasks:
-#       - name: Ping my hosts
-#         ansible.builtin.ping:
-
-#       - name: Print message
-#         ansible.builtin.debug:
-#             msg: Hello world
-
-- name: Add static route to ISP router
+- name: Configure routing on ISP router
   hosts: isprouter
   become: yes
   tasks:
-    - name: Add static routes
-      lineinfile:
-        path: /etc/network/interfaces
-        line: "up ip route add 172.30.0.0/16 via 192.168.57.253"
+    - name: Enable routing
+      ansible.posix.sysctl:
+        name: net.ipv4.ip_forward
+        value: "1"
+        state: present
+        reload: true
+
+    - name: Install firewall
+      ansible.builtin.package:
+        name: nftables
         state: present
 
-    - name: Restart network service
-      command: ifdown eth1 && ifup eth1
+    - name: Copy firewall configuration
+      ansible.builtin.copy:
+        src: ./files/isprouter/etc/nftables.nft
+        dest: /etc/nftables.nft
+
+    - name: Enable and start firewall
+      ansible.builtin.service:
+        name: nftables
+        enabled: yes
+        state: started
+
+- name: Configure routing on company router
+  hosts: companyrouter
+  become: yes
+  tasks:
+    - name: Enable routing
+      ansible.posix.sysctl:
+        name: net.ipv4.ip_forward
+        value: "1"
+        state: present
+        reload: true
+
+- name: Configure DNS server
+  hosts: dns
+  become: yes
+  tasks:
+    - name: Set IPv4 DNS server address
+      community.general.nmcli:
+        conn_name: System eth1
+        type: ethernet
+        dns4:
+          - 8.8.8.8
+        state: present
+
+    - name: Install bind
+      ansible.builtin.package:
+        name: bind
+        state: present
+
+    # - name: Copy bind configuration
+    #   ansible.builtin.copy:
+    #     src: ./files/dns/etc/named.conf
+    #     dest: /etc/named.conf
+
+    # - name: Copy zone files
+    #   ansible.builtin.copy:
+    #     src: ./files/dns/zones/
+    #     dest: /var/named/
+    #     ansible.builtin.file:
+    #     path: /var/named/
+    #     state: directory
+
+    - name: Start and enable bind service
+      ansible.builtin.service:
+        name: named
+        enabled: yes
+        state: started
+
+- name: Configure DNS on internal company lan
+  hosts: internal_company_lan, companyrouter
+  become: yes
+  tasks:
+    - name: Set IPv4 DNS server address
+      community.general.nmcli:
+        conn_name: System eth2
+        type: ethernet
+        dns4:
+          - 172.30.0.4
+        state: present
+
+- name: Configure DNS on employee home lan
+  hosts: employee, homerouter
+  become: yes
+  tasks:
+    - name: Set IPv4 DNS server address
+      community.general.nmcli:
+        conn_name: System eth2
+        type: ethernet
+        dns4:
+          - 172.30.0.4
+        state: present

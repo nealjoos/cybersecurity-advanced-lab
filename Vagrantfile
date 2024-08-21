@@ -6,8 +6,8 @@ Vagrant.configure("2") do |config|
         host.vm.box = "almalinux/9"
         host.vm.hostname = "companyrouter"
 
-        host.vm.network "private_network", ip: "172.30.255.254", netmask: "255.255.0.0", virtualbox__intnet: "internal-company-lan"
         host.vm.network "private_network", ip: "192.168.62.253", netmask: "255.255.255.0", name: HOST_ONLY_NETWORK
+        host.vm.network "private_network", ip: "172.30.255.254", netmask: "255.255.0.0", virtualbox__intnet: "internal-company-lan"
 
         host.vm.provider :virtualbox do |v|
             v.name = "companyrouter"
@@ -17,8 +17,8 @@ Vagrant.configure("2") do |config|
 
         host.vm.provision "shell", inline: <<-SHELL
             # Default gateway
-            nmcli connection modify System\ eth2 ipv4.gateway 192.168.62.254
-            nmcli connection up System\ eth2
+            nmcli connection modify "System eth1" ipv4.gateway 192.168.62.254
+            nmcli connection down "System eth1" && nmcli connection up "System eth1"
         SHELL
     end
 
@@ -33,6 +33,12 @@ Vagrant.configure("2") do |config|
             v.cpus = "1"
             v.memory = "2048"
         end
+
+        host.vm.provision "shell", inline: <<-SHELL
+            # Default gateway
+            nmcli connection modify "System eth1" ipv4.gateway 172.30.255.254
+            nmcli connection down "System eth1" && nmcli connection up "System eth1"
+        SHELL
     end
 
     config.vm.define "web" do |host|
@@ -46,6 +52,12 @@ Vagrant.configure("2") do |config|
             v.cpus = "1"
             v.memory = "2048"
         end
+
+        host.vm.provision "shell", inline: <<-SHELL
+            # Default gateway
+            nmcli connection modify "System eth1" ipv4.gateway 172.30.255.254
+            nmcli connection down "System eth1" && nmcli connection up "System eth1"
+        SHELL
     end
 
     config.vm.define "database" do |host|
@@ -59,6 +71,12 @@ Vagrant.configure("2") do |config|
             v.cpus = "1"
             v.memory = "2048"
         end
+
+        host.vm.provision "shell", inline: <<-SHELL
+            # Default gateway
+            nmcli connection modify "System eth1" ipv4.gateway 172.30.255.254
+            nmcli connection down "System eth1" && nmcli connection up "System eth1"
+        SHELL
     end
 
     config.vm.define "isprouter" do |host|
@@ -74,18 +92,8 @@ Vagrant.configure("2") do |config|
         end
 
         host.vm.provision "shell", inline: <<-SHELL
-            # Routing
-            echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
-            sysctl -p
-
-            echo "up ip route add 172.30.0.0/16 via 192.168.62.253" >> /etc/network/interfaces
-            service networking restart           
-
-            # For ansible
-            apk --no-cache add python3
+            apk --no-cache add python3 # For ansible
         SHELL
-        host.vm.provision "shell", inline: "" 
-
     end
 
     config.vm.define "red" do |host|
@@ -101,13 +109,12 @@ Vagrant.configure("2") do |config|
         end
 
         host.vm.provision "shell", inline: <<-SHELL
+            # Ansible controller node
+            apt-get update
+            apt-get install --assume-yes ansible
+
             # Default gateway
             echo "gateway 192.168.62.254" >> /etc/network/interfaces
-            systemctl restart networking.service
-
-            # Ansible controller node
-            # apt-get update
-            # apt-get install --assume-yes ansible
         SHELL
     end
 
@@ -123,6 +130,12 @@ Vagrant.configure("2") do |config|
             v.cpus = "1"
             v.memory = "2048"
         end
+
+        host.vm.provision "shell", inline: <<-SHELL
+            # Default gateway
+            nmcli connection modify "System eth1" ipv4.gateway 192.168.62.254
+            nmcli connection down "System eth1" && nmcli connection up "System eth1"
+        SHELL
     end
 
     config.vm.define "employee" do |host|
@@ -136,5 +149,11 @@ Vagrant.configure("2") do |config|
             v.cpus = "1"
             v.memory = "2048"
         end
+
+        host.vm.provision "shell", inline: <<-SHELL
+            # Default gateway
+            nmcli connection modify "System eth1" ipv4.gateway 172.10.10.254
+            nmcli connection down "System eth1" && nmcli connection up "System eth1"
+        SHELL
     end
 end

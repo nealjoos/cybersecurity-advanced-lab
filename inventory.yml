@@ -16,14 +16,14 @@ fake_internet:
     isprouter:
       ansible_host: 192.168.62.254
     red:
-      ansible_host: 192.168.62.100
+      ansible_host: 192.168.62.66
     homerouter:
       ansible_host: 192.168.62.42
 
 employee_home_lan:
   hosts:
     # homerouter: # Already defined in fake_internet
-      # ansible_host: 172.10.10.254
+    # ansible_host: 172.10.10.254
     employee:
       ansible_host: 172.10.10.23
 
@@ -31,4 +31,4 @@ all:
   vars:
     ansible_user: vagrant
     ansible_password: vagrant
-    ansible_ssh_common_args: -o StrictHostKeyChecking=no
+    ansible_ssh_common_args: "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
