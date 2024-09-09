@@ -12,7 +12,7 @@ Vagrant.configure("2") do |config|
         host.vm.provider :virtualbox do |v|
             v.name = "companyrouter"
             v.cpus = "1"
-            v.memory = "2048"
+            v.memory = "1024"
         end
 
         host.vm.provision "shell", inline: <<-SHELL
@@ -31,7 +31,7 @@ Vagrant.configure("2") do |config|
         host.vm.provider :virtualbox do |v|
             v.name = "dns"
             v.cpus = "1"
-            v.memory = "2048"
+            v.memory = "1024"
         end
 
         host.vm.provision "shell", inline: <<-SHELL
@@ -50,7 +50,7 @@ Vagrant.configure("2") do |config|
         host.vm.provider :virtualbox do |v|
             v.name = "web"
             v.cpus = "1"
-            v.memory = "2048"
+            v.memory = "1024"
         end
 
         host.vm.provision "shell", inline: <<-SHELL
@@ -69,7 +69,7 @@ Vagrant.configure("2") do |config|
         host.vm.provider :virtualbox do |v|
             v.name = "database"
             v.cpus = "1"
-            v.memory = "2048"
+            v.memory = "1024"
         end
 
         host.vm.provision "shell", inline: <<-SHELL
@@ -88,7 +88,7 @@ Vagrant.configure("2") do |config|
         host.vm.provider :virtualbox do |v|
             v.name = "isprouter"
             v.cpus = "1"
-            v.memory = "1024"
+            v.memory = "256"
         end
 
         host.vm.provision "shell", inline: <<-SHELL
@@ -128,7 +128,7 @@ Vagrant.configure("2") do |config|
         host.vm.provider :virtualbox do |v|
             v.name = "homerouter"
             v.cpus = "1"
-            v.memory = "2048"
+            v.memory = "1024"
         end
 
         host.vm.provision "shell", inline: <<-SHELL
@@ -147,7 +147,7 @@ Vagrant.configure("2") do |config|
         host.vm.provider :virtualbox do |v|
             v.name = "employee"
             v.cpus = "1"
-            v.memory = "2048"
+            v.memory = "1024"
         end
 
         host.vm.provision "shell", inline: <<-SHELL
