@@ -124,7 +124,7 @@ Vagrant.configure("2") do |config|
     end
 
     config.vm.define "homerouter" do |host|
-        host.vm.box = "almalinux/9"
+        host.vm.box = "generic/alpine318"
         host.vm.hostname = "homerouter"
 
         host.vm.network "private_network", ip: "192.168.62.42", netmask: "255.255.255.0", name: HOST_ONLY_NETWORK
@@ -133,13 +133,16 @@ Vagrant.configure("2") do |config|
         host.vm.provider :virtualbox do |v|
             v.name = "homerouter"
             v.cpus = "1"
-            v.memory = "1024"
+            v.memory = "256"
         end
 
         host.vm.provision "shell", inline: <<-SHELL
+            # For ansible
+            apk --no-cache add python3
+
             # Default gateway
-            nmcli connection modify "System eth1" ipv4.gateway 192.168.62.254
-            nmcli connection down "System eth1" && nmcli connection up "System eth1"
+            echo "gateway 192.168.62.254" >> /etc/network/interfaces
+            service networking restart
         SHELL
     end
 

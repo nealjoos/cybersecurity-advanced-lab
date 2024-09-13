@@ -11,8 +11,11 @@ table inet filter {
         ct state { established, related } accept
         ct state invalid drop
 
-        tcp dport ssh accept
+        tcp dport 22 accept
         icmp type echo-request accept
+        tcp dport 53 accept
+        udp dport 53 accept
+
     }
 
     chain postrouting {

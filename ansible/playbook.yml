@@ -52,6 +52,65 @@
         state: present
         reload: true
 
+- name: Configure routing on home router
+  hosts: homerouter
+  become: yes
+  tasks:
+    - name: Enable routing
+      ansible.posix.sysctl:
+        name: net.ipv4.ip_forward
+        value: "1"
+        state: present
+        reload: true
+
+- name: Install DNS server on ISP router
+  hosts: isprouter
+  become: yes
+  tasks:
+    - name: Install DNS server
+      ansible.builtin.package:
+        name: unbound
+        state: present
+
+    - name: Copy DNS configuration
+      ansible.builtin.copy:
+        src: ./files/isprouter/etc/unbound/unbound.conf
+        dest: /etc/unbound/unbound.conf
+
+    - name: Enable and start DNS server
+      ansible.builtin.service:
+        name: unbound
+        enabled: yes
+        state: started
+
+- name: Add DNS server address to company router
+  hosts: companyrouter
+  become: yes
+  tasks:
+    - name: Add DNS server address
+      community.general.nmcli:
+        conn_name: System eth2
+        type: ethernet
+        dns4:
+          - 192.168.62.254
+        state: present
+
+- name: Add DNS server address to home router and debug
+  hosts: homerouter, debug
+  become: yes
+  tasks:
+    - name: Remove original DNS server
+      ansible.builtin.lineinfile:
+        path: /etc/resolv.conf
+        line: "nameserver 10.0.2.3"
+        state: absent
+
+    - name: Add DNS server
+      ansible.builtin.lineinfile:
+        path: /etc/resolv.conf
+        line: "nameserver 192.168.62.254"
+        state: present
+
 - name: Enable DHCP on internal company LAN
   hosts: companyrouter
   become: yes
@@ -72,24 +131,13 @@
         enabled: yes
         state: started
 
-- name: Configure routing on home router
-  hosts: homerouter
-  become: yes
-  tasks:
-    - name: Enable routing
-      ansible.posix.sysctl:
-        name: net.ipv4.ip_forward
-        value: "1"
-        state: present
-        reload: true
-
 - name: Enable DHCP on employee home LAN
   hosts: homerouter
   become: yes
   tasks:
     - name: Install DHCP server
       ansible.builtin.package:
-        name: dhcp-server
+        name: dhcp
         state: present
 
     - name: Copy DHCP configuration
@@ -105,7 +153,6 @@
 
 # TODO
 # - Reboot all routers or all devices
-# - DHCP internal
 # - DHCP remote
 # - Database
 # - Web server
