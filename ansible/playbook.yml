@@ -52,6 +52,26 @@
         state: present
         reload: true
 
+- name: Enable DHCP on internal company LAN
+  hosts: companyrouter
+  become: yes
+  tasks:
+    - name: Install DHCP server
+      ansible.builtin.package:
+        name: dhcp-server
+        state: present
+
+    - name: Copy DHCP configuration
+      ansible.builtin.copy:
+        src: ./files/companyrouter/etc/dhcp/dhcpd.conf
+        dest: /etc/dhcp/dhcpd.conf
+
+    - name: Enable DHCP server
+      ansible.builtin.service:
+        name: dhcpd
+        enabled: yes
+        state: started
+
 - name: Configure routing on home router
   hosts: homerouter
   become: yes
@@ -62,6 +82,26 @@
         value: "1"
         state: present
         reload: true
+
+- name: Enable DHCP on employee home LAN
+  hosts: homerouter
+  become: yes
+  tasks:
+    - name: Install DHCP server
+      ansible.builtin.package:
+        name: dhcp-server
+        state: present
+
+    - name: Copy DHCP configuration
+      ansible.builtin.copy:
+        src: ./files/homerouter/etc/dhcp/dhcpd.conf
+        dest: /etc/dhcp/dhcpd.conf
+
+    - name: Enable DHCP server
+      ansible.builtin.service:
+        name: dhcpd
+        enabled: yes
+        state: started
 
 # TODO
 # - Reboot all routers or all devices
