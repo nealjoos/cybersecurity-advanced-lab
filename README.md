@@ -1,4 +1,4 @@
-# CyberCSA-lab-template
+# Cybersecurity-advanced-lab-template
 
 This environment is used to build up the lab set-up. It provides the base network and hosts. The entire network is built up in VirtualBox, using Vagrant.
 
@@ -8,7 +8,7 @@ The network consists of 4 subnets:
 
 -   172.30.0.0/16: **internal company LAN**.
 -   192.168.62.254/24: **fake internet**.
--   172.10.0.0/24: **employee home LAN**.
+-   172.10.10.0/24: **employee home LAN**.
 -   10.0.2.0/24: **VirtualBox NAT network**.
 
 :bulb: Tip: Linux and Mac users must first read https://www.virtualbox.org/manual/ch06.html#network_hostonly .
@@ -21,43 +21,42 @@ The network consists of 4 subnets:
 ```puml
 @startuml
 nwdiag {
-    network internal {
+    network internal_company_lan {
         address = 172.30.0.0/16;
-        description = "internal company LAN";
 
         companyrouter [address = "172.30.255.254"];
         dns [address = "172.30.0.4"];
         web [address = "172.30.0.10"];
         database [address = "172.30.0.15"];
+        employee [address = "dhcp"];
     }
 
-    network hostonly {
+    network fake_internet {
         address = "192.168.62.0/24";
-        description = "fake internet";
 
         companyrouter [address = "192.168.62.253"];
         isprouter [address = "192.168.62.254"];
-        red [address = "192.168.62.100"];
         your_laptop [address = "dhcp"];
         homerouter [address = "192.168.62.42"];
     }
 
-    network employee {
+    network employee_home_lan {
         address = "172.10.0.0/24";
-        description = "employee home LAN";
 
         homerouter [address = "172.10.10.254"];
-        employee [address = "172.10.10.123"];
+        remote_employee [address = "dhcp"];
     }
 
-    network nat {
+    network virtualbox_nat {
         address = "10.0.2.0/24";
-        description = "VirtualBox";
 
         isprouter [address = "10.0.2.15"];
         virtualbox_nat_gateway [address = "10.0.2.2"];
         virtualbox_nat_dns [address = "10.0.2.3"];
     }
+
+    real_internet [ shape = cloud];
+    virtualbox_nat_gateway -- real_internet;
 }
 @enduml
 ```
@@ -66,17 +65,19 @@ nwdiag {
 
 1. Create the following host-only network in VirtualBox to simulate the the fake internet:
 
-    -   Name: `vboxnet1` (when different, change this in `Vagrantfile`)
-    -   IP range: 192.168.62.0/24
+    - Name: `vboxnet1` (when different, change this in `Vagrantfile`)
+    - IP range: 192.168.62.0/24
 
-1. `vagrant up --parallel`
+2. `vagrant up --parallel`
 
-1. Disable all the NAT connections added by vagrant: `./disable-nat.sh`
+3. Disable all the NAT connections added by vagrant: `./disable-nat.sh`
 
-1. Test connectivity with Ansible:
+    :warning: `vagrant ssh` won't work anymore and that is **by design**! This command is also not available in a real network, so learn to use SSH properly: login into the required hosts using SSH with IP adresses and jump/forward options!
+
+4. Test connectivity with Ansible:
 
     ```console
-    $ ansible fake_internet --inventory inventory.yml --module-name ping
+    $ ansible fake_internet --inventory ansible/inventory.yml --module-name ping
     red | SUCCESS => {
         "ansible_facts": {
             "discovered_interpreter_python": "/usr/bin/python3"
@@ -108,4 +109,41 @@ nwdiag {
         "changed": false,
         "ping": "pong"
     }
+    ```
+
+5. Run the playbook with Ansible:
+
+    ```console
+    ansible-playbook --inventory ansible/inventory.yml ansible/playbook.yml 
+
+    PLAY [Configure routing on ISP router] ***
+
+    TASK [Gathering Facts] *******************
+    [WARNING]: Platform linux on host isprouter is using the discovered Python interpreter at /usr/bin/python3.11, but future installation of another Python interpreter could change the meaning of that path. See https://docs.ansible.com/ansible-core/2.16/reference_appendices/interpreter_discovery.html for more
+    information.
+    ok: [isprouter]
+
+    TASK [Enable routing] ******************************************************
+    changed: [isprouter]
+
+    TASK [Install firewall] ****************************************************
+    changed: [isprouter]
+
+    TASK [Copy firewall configuration] *****************************************
+    changed: [isprouter]
+
+    TASK [Enable and start firewall] *******************************************
+    changed: [isprouter]
+
+    PLAY [Configure routing on company router] *********************************
+
+    TASK [Gathering Facts] *****************************************************
+    ok: [companyrouter]
+
+    TASK [Enable routing] ******************************************************
+    changed: [companyrouter]
+
+    PLAY RECAP *****************************************************************
+    companyrouter              : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+    isprouter                  : ok=5    changed=4    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0  
     ```

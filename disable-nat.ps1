@@ -2,7 +2,16 @@
 # Don't disconnect the NAT interface from the ISP router, or you can't reach the internet!
 # Verify the vboxmanage path below, when needed
 
-$vms = @("dns", "web", "companyrouter","dns","database","red","homerouter","employee")
+$vms = @(
+    "companyrouter",
+    "dns",
+    "web",
+    "database",
+    "employee",
+    "homerouter",
+    "remote_employee",
+    "debug"    
+)
 
 ForEach($vm in $vms) {
     echo "Disabling NAT for $vm"

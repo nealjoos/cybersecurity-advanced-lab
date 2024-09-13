@@ -6,8 +6,10 @@ internal_company_lan:
       ansible_host: 172.30.0.4
     web:
       ansible_host: 172.30.0.10
-    db:
+    database:
       ansible_host: 172.30.0.15
+    employee:
+      ansible_host: 172.30.0.123
 
 fake_internet:
   hosts:
@@ -15,17 +17,19 @@ fake_internet:
       ansible_host: 192.168.62.253
     isprouter:
       ansible_host: 192.168.62.254
-    red:
-      ansible_host: 192.168.62.66
+    # red:
+    #   ansible_host: 192.168.62.66
     homerouter:
       ansible_host: 192.168.62.42
+    debug:
+      ansible_host: 192.168.62.123
 
 employee_home_lan:
   hosts:
     # homerouter: # Already defined in fake_internet
     # ansible_host: 172.10.10.254
-    employee:
-      ansible_host: 172.10.10.23
+    remote_employee:
+      ansible_host: 172.10.10.123
 
 all:
   vars:

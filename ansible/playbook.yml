@@ -9,6 +9,22 @@
         state: present
         reload: true
 
+    - name: Add a static route for the internal company LAN
+      ansible.builtin.lineinfile:
+        path: /etc/network/interfaces
+        line: "up ip route add 172.30.0.0/16 via 192.168.62.253"
+        state: present
+
+    - name: Add a static route for the employee home LAN
+      ansible.builtin.lineinfile:
+        path: /etc/network/interfaces
+        line: "up ip route add 172.10.10.0/24 via 192.168.62.42"
+        state: present
+
+    - name: Restart networking to apply the static route
+      ansible.builtin.service:
+        name: network
+        state: restarted
     - name: Install firewall
       ansible.builtin.package:
         name: nftables
@@ -36,62 +52,20 @@
         state: present
         reload: true
 
-- name: Configure DNS server
-  hosts: dns
+- name: Configure routing on home router
+  hosts: homerouter
   become: yes
   tasks:
-    - name: Set IPv4 DNS server address
-      community.general.nmcli:
-        conn_name: System eth1
-        type: ethernet
-        dns4:
-          - 8.8.8.8
+    - name: Enable routing
+      ansible.posix.sysctl:
+        name: net.ipv4.ip_forward
+        value: "1"
         state: present
+        reload: true
 
-    - name: Install bind
-      ansible.builtin.package:
-        name: bind
-        state: present
-
-    # - name: Copy bind configuration
-    #   ansible.builtin.copy:
-    #     src: ./files/dns/etc/named.conf
-    #     dest: /etc/named.conf
-
-    # - name: Copy zone files
-    #   ansible.builtin.copy:
-    #     src: ./files/dns/zones/
-    #     dest: /var/named/
-    #     ansible.builtin.file:
-    #     path: /var/named/
-    #     state: directory
-
-    - name: Start and enable bind service
-      ansible.builtin.service:
-        name: named
-        enabled: yes
-        state: started
-
-- name: Configure DNS on internal company lan
-  hosts: internal_company_lan, companyrouter
-  become: yes
-  tasks:
-    - name: Set IPv4 DNS server address
-      community.general.nmcli:
-        conn_name: System eth2
-        type: ethernet
-        dns4:
-          - 172.30.0.4
-        state: present
-
-- name: Configure DNS on employee home lan
-  hosts: employee, homerouter
-  become: yes
-  tasks:
-    - name: Set IPv4 DNS server address
-      community.general.nmcli:
-        conn_name: System eth2
-        type: ethernet
-        dns4:
-          - 172.30.0.4
-        state: present
+# TODO
+# - Reboot all routers or all devices
+# - DHCP internal
+# - DHCP remote
+# - Database
+# - Web server
