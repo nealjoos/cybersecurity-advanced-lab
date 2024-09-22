@@ -65,16 +65,16 @@ nwdiag {
 
 1. Create the following host-only network in VirtualBox to simulate the the fake internet:
 
-    - Name: `vboxnet1` (when different, change this in `Vagrantfile`)
+    - Name: `vboxnet1` (when different, for example on Windows: "VirtualBox Host-Only Ethernet Adapter #2", change this in the `Vagrantfile`)
     - IP range: 192.168.62.0/24
 
-2. `vagrant up --parallel`
+2. `vagrant up --parallel` or go slowly (1 by 1) and do `vagrant up <machinename>` 
 
-3. Disable all the NAT connections added by vagrant: `./disable-nat.sh`
+3. Disable all the NAT connections added by vagrant: `./disable-nat.sh` or use `./disable-nat.ps1` (if you receive an error about running scripts being disable, make sure you understand what this is. A quick alternative is to copy over the contents in PowerShell ISE or in an interactive PowerShell window).
 
-    :warning: `vagrant ssh` won't work anymore and that is **by design**! This command is also not available in a real network, so learn to use SSH properly: login into the required hosts using SSH with IP adresses and jump/forward options!
+    :warning: `vagrant ssh` won't work anymore and that is **by design**! This command is also not available in a real network, so learn to use SSH properly: login into the required hosts using SSH with IP addresses and jump/forward options!
 
-4. Test connectivity with Ansible:
+4. Test connectivity with Ansible (Ansible cannot be installed on Windows, if your host is running Windows you can install Ansible in WSL. Another alternative is to copy over the repository to the companyrouter and install Ansible. Instructions can be found [here for WSL](./installation-windows-wsl.md) and [here without WSL](./installation-windows-no-wsl.md)):
 
     ```console
     $ ansible fake_internet --inventory ansible/inventory.yml --module-name ping

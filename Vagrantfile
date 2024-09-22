@@ -146,14 +146,14 @@ Vagrant.configure("2") do |config|
         SHELL
     end
 
-    config.vm.define "remote_employee" do |host|
+    config.vm.define "remote-employee" do |host|
         host.vm.box = "almalinux/9"
-        host.vm.hostname = "remote_employee"
+        host.vm.hostname = "remote-employee"
 
         host.vm.network "private_network", ip: "172.10.10.123", netmask: "255.255.255.0", virtualbox__intnet: "employee-home-lan"
 
         host.vm.provider :virtualbox do |v|
-            v.name = "remote_employee"
+            v.name = "remote-employee"
             v.cpus = "1"
             v.memory = "1024"
         end
