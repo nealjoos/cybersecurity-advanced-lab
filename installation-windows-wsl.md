@@ -21,3 +21,10 @@ At the top after pressing it:
 `ansible fake_internet --inventory ansible/inventory.yml --module-name ping`
 
 `ansible-playbook --inventory ansible/inventory.yml ansible/playbook.yml`
+
+
+Finally, to reach the internal network you will have to add a route on your host (!) 
+
+`route add 172.30.0.0 mask 255.255.0.0 192.168.62.254`
+
+:warning: Be very mindful. If this range would overlap with another network (docker, at home...)!

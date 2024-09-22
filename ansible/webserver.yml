@@ -1,0 +1,52 @@
+- name: Configure webserver
+  hosts: web
+  become: yes
+  tasks:
+    - name: Install apache/httpd
+      ansible.builtin.package:
+        name: httpd
+        state: present
+    
+    - name: Install java
+      ansible.builtin.package:
+        name: java-17-openjdk
+        state: present
+
+    - name: Enable and start apache/httpd
+      ansible.builtin.service:
+        name: httpd
+        enabled: yes
+        state: restarted
+
+    - name: Copy apache configuration
+      ansible.builtin.copy:
+        src: ./files/web/etc/httpd.conf
+        dest: /etc/httpd/conf/httpd.conf
+    
+    - name: Copy systemd insecurewebapp configuration
+      ansible.builtin.copy:
+        src: ./files/web/insecurewebapp.service
+        dest: /etc/systemd/system/insecurewebapp.service
+
+    - name: Selinux:setsebool -P httpd_can_network_connect on
+      ansible.builtin.seboolean:
+        name: httpd_can_network_connect
+        state: yes
+        persistent: yes
+
+    - name: Perform the systemd daemon-reload and start and enable insecurewebapp service
+      ansible.builtin.systemd:
+        name: insecurewebapp.service
+        state: restarted
+        daemon_reload: true
+
+    - name: Create insecurewebapp dir in opt
+      ansible.builtin.file:
+        path: /opt/insecurewebapp/
+        state: directory
+        mode: '0755'
+
+    - name: Copy app.jar 
+      ansible.builtin.copy:
+        src: ./files/web/app.jar
+        dest: /opt/insecurewebapp/app.jar
