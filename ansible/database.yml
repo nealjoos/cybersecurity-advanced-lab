@@ -2,6 +2,18 @@
   hosts: database
   become: yes
   tasks:
+    - name: Remove original DNS server
+      ansible.builtin.lineinfile:
+        path: /etc/resolv.conf
+        line: "nameserver 10.0.2.3"
+        state: absent
+ 
+    - name: Add DNS server - (temporary as it should be the internal dns server at the end)
+      ansible.builtin.lineinfile:
+        path: /etc/resolv.conf
+        line: "nameserver 192.168.62.254"
+        state: present
+
     - name: Install mysql, client and pip
       ansible.builtin.package:
         name:
