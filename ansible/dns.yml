@@ -1,0 +1,53 @@
+- name: Configure dns server in internal company network
+  hosts: dns
+  become: yes
+  tasks:
+    - name: Remove original DNS server
+      ansible.builtin.lineinfile:
+        path: /etc/resolv.conf
+        line: "nameserver 10.0.2.3"
+        state: absent
+ 
+    - name: Add DNS server
+      ansible.builtin.lineinfile:
+        path: /etc/resolv.conf
+        line: "nameserver 192.168.62.254"
+        state: present
+ 
+    - name: Install unbound
+      ansible.builtin.package:
+        name: unbound
+        state: present
+ 
+    - name: Create unbound.conf.d dir
+      ansible.builtin.file:
+        path: /etc/unbound/unbound.conf.d
+        state: directory
+        mode: '0755'
+ 
+    - name: Copy unbound general config
+      ansible.builtin.copy:
+        src: ./files/dns/etc/unbound.conf
+        dest: /etc/unbound/unbound.conf
+ 
+    - name: Copy unbound cybersec.internal config
+      ansible.builtin.copy:
+        src: ./files/dns/etc/cybersec-internal.conf
+        dest: /etc/unbound/unbound.conf.d/cybersec.internal.conf
+ 
+ 
+- name: Configure dns server in internal company network
+  hosts: web, database, employee, debug
+  become: yes
+  tasks:
+    - name: Remove original DNS server
+      ansible.builtin.lineinfile:
+        path: /etc/resolv.conf
+        line: "nameserver 10.0.2.3"
+        state: absent
+ 
+    - name: Add DNS server
+      ansible.builtin.lineinfile:
+        path: /etc/resolv.conf
+        line: "nameserver 172.30.0.4"
+        state: present

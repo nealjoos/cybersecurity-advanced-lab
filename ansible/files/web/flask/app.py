@@ -9,8 +9,8 @@ def check_db_connection():
     try:
         # Try to connect to the MySQL database
         connection = mysql.connector.connect(
-            host='localhost',
-            database='your_database',  # Change this to your database name
+            host='172.30.0.15',
+            database='db_services',  # Change this to your database name
             user='toor',
             password='summer'
         )
