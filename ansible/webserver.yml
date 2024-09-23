@@ -118,3 +118,9 @@
         path: /etc/hosts
         line: "127.0.2.1 web web.cybersec.internal www www.cybersec.internal"
         state: present
+
+    - name: Enable and start apache/httpd
+      ansible.builtin.service:
+        name: httpd
+        enabled: yes
+        state: restarted
