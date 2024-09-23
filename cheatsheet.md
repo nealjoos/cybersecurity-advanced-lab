@@ -20,6 +20,7 @@ Reboot isprouter, companyrouter, homerouter
 
 `ansible all --inventory ansible/inventory.yml --module-name ping`
 
+
 `ansible-playbook --inventory ansible/inventory.yml ansible/webserver.yml`
-`ansible-playbook --inventory ansible/inventory.yml ansible/dns.yml`
 `ansible-playbook --inventory ansible/inventory.yml ansible/database.yml`
+`ansible-playbook --inventory ansible/inventory.yml ansible/dns.yml`

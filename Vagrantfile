@@ -106,7 +106,7 @@ Vagrant.configure("2") do |config|
             apk --no-cache add python3
 
             # Default gateway
-            echo "gateway 192.168.62.254" >> /etc/network/interfaces
+            echo "gateway 172.30.255.254" >> /etc/network/interfaces
             service networking restart
         SHELL
     end
