@@ -8,7 +8,11 @@ All instructions from the Linux installation are pretty much valid, but there is
 
 We use ansible to configure the virtual machines and copy over some files. For people who do not know this, Windows and Linux treat the "newline" differently. In other words the "End of Line Sequence" is different. Linux uses what is called LF (line feed) or `'\n'` where as Windows uses CR+LF (often reffered to as CRLF) or `'\r\n'`. If you are interested to learn more refer to <https://en.wikipedia.org/wiki/Newline>
 
-This means that since we have the source files present on a Windows device in the `ansible/files` folder, all the configuration files that Ansible on (Ubuntu) WSL will copy over will have CRLF line endings on the Linux virtual machines. Depending on how certain software was programmed this might throw errors and it's best to avoid this. The easiest fix is to open the entire repository in visual studio code and open the files. At the bottom of visual studio code you should see CRLF. Pressing this will open a drop down window at the top, where you can switch to LF. After saving, the file will now have LF file endings. If you will now issue the `ansible-playbook` command, things should be completely similar to the linux install instructions.
+This means that since we have the source files present on a Windows device in the `ansible/files` folder, all the configuration files that Ansible on (Ubuntu) WSL will copy over will have CRLF line endings on the Linux virtual machines. Depending on how certain software was programmed this might throw errors and it's best to avoid this. The easiest fix is using `dos2unix`.
+
+A possible command to only do this on the ansible directory is: `find ansible/ -type f -print0 | xargs -0 dos2unix`
+
+If you want to do it manually you can open the entire repository in visual studio code and open the files. At the bottom of visual studio code you should see CRLF. Pressing this will open a drop down window at the top, where you can switch to LF. After saving, the file will now have LF file endings. If you will now issue the `ansible-playbook` command, things should be completely similar to the linux install instructions.
 
 At the bottom of visual studio code:
 ![crlf-lf](./img/crlf-lf.png) 
@@ -28,3 +32,9 @@ Finally, to reach the internal network you will have to add a route on your host
 `route add 172.30.0.0 mask 255.255.0.0 192.168.62.254`
 
 :warning: Be very mindful. If this range would overlap with another network (docker, at home...)!
+
+Now you can configure the other machines, using ansible as well.
+
+`ansible-playbook --inventory ansible/inventory.yml ansible/webserver.yml`
+`ansible-playbook --inventory ansible/inventory.yml ansible/dns.yml`
+`ansible-playbook --inventory ansible/inventory.yml ansible/database.yml`
