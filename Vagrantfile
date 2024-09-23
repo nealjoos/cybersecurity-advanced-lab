@@ -102,7 +102,12 @@ Vagrant.configure("2") do |config|
         end
 
         host.vm.provision "shell", inline: <<-SHELL
-            apk --no-cache add python3 # For ansible
+            # For ansible
+            apk --no-cache add python3
+
+            # Default gateway
+            echo "gateway 192.168.62.254" >> /etc/network/interfaces
+            service networking restart
         SHELL
     end
 

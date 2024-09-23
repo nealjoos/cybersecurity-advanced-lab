@@ -26,13 +26,13 @@
  
     - name: Copy bind zone file config
       ansible.builtin.copy:
-        src: ./files/dns/etc/db-cybersec.internal
-        dest: /var/bind/db.cybersec.internal
+        src: ./files/dns/etc/cybersec.internal
+        dest: /var/bind/cybersec.internal
  
  
     - name: Enable and start bind
       ansible.builtin.service:
-        name: bind
+        name: named
         enabled: yes
         state: restarted
  

@@ -95,6 +95,11 @@
       ansible.builtin.copy:
         src: ./files/web/flask/templates/index.html
         dest: /opt/flask/templates/index.html
+
+    - name: Copy main site - index.html
+      ansible.builtin.copy:
+        src: ./files/web/index.html
+        dest: /var/www/html/index.html
  
     - name: Perform the systemd daemon-reload and start and enable insecurewebapp service
       ansible.builtin.systemd:
