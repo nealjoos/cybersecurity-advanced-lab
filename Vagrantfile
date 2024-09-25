@@ -169,26 +169,4 @@ Vagrant.configure("2") do |config|
             nmcli connection down "System eth1" && nmcli connection up "System eth1"
         SHELL
     end
-
-    config.vm.define "debug" do |host|
-        host.vm.box = "generic/alpine318"
-        host.vm.hostname = "debug"
-
-        host.vm.network "private_network", ip: "192.168.62.123", netmask: "255.255.255.0", name: HOST_ONLY_NETWORK
-
-        host.vm.provider :virtualbox do |v|
-            v.name = "debug"
-            v.cpus = "1"
-            v.memory = "256"
-        end
-
-        host.vm.provision "shell", inline: <<-SHELL
-            # For ansible
-            apk --no-cache add python3
-
-            # Default gateway
-            echo "gateway 192.168.62.254" >> /etc/network/interfaces
-            service networking restart
-        SHELL
-    end
 end

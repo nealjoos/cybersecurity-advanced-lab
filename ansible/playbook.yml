@@ -8,39 +8,40 @@
         value: "1"
         state: present
         reload: true
- 
+
     - name: Add a static route for the internal company LAN
       ansible.builtin.lineinfile:
         path: /etc/network/interfaces
         line: "up ip route add 172.30.0.0/16 via 192.168.62.253"
         state: present
- 
+
     - name: Add a static route for the employee home LAN
       ansible.builtin.lineinfile:
         path: /etc/network/interfaces
         line: "up ip route add 172.10.10.0/24 via 192.168.62.42"
         state: present
- 
+
     - name: Restart networking to apply the static route
       ansible.builtin.service:
         name: network
         state: restarted
+
     - name: Install firewall
       ansible.builtin.package:
         name: nftables
         state: present
- 
+
     - name: Copy firewall configuration
       ansible.builtin.copy:
         src: ./files/isprouter/etc/nftables.nft
         dest: /etc/nftables.nft
- 
+
     - name: Enable and start firewall
       ansible.builtin.service:
         name: nftables
         enabled: yes
         state: started
- 
+
 - name: Configure routing on company router
   hosts: companyrouter
   become: yes
@@ -51,7 +52,7 @@
         value: "1"
         state: present
         reload: true
- 
+
 - name: Configure routing on home router
   hosts: homerouter
   become: yes
@@ -62,7 +63,7 @@
         value: "1"
         state: present
         reload: true
- 
+
 - name: Install DNS server on ISP router
   hosts: isprouter
   become: yes
@@ -71,18 +72,18 @@
       ansible.builtin.package:
         name: unbound
         state: present
- 
+
     - name: Copy DNS configuration
       ansible.builtin.copy:
         src: ./files/isprouter/etc/unbound/unbound.conf
         dest: /etc/unbound/unbound.conf
- 
+
     - name: Enable and start DNS server
       ansible.builtin.service:
         name: unbound
         enabled: yes
         state: started
- 
+
 - name: Add DNS server address to company router
   hosts: companyrouter
   become: yes
@@ -94,9 +95,9 @@
         dns4:
           - 192.168.62.254
         state: present
- 
-- name: Add DNS server address to companyrouter, home router and debug
-  hosts: homerouter, debug, companyrouter
+
+- name: Add DNS server address to home router
+  hosts: homerouter
   become: yes
   tasks:
     - name: Remove original DNS server
@@ -104,56 +105,9 @@
         path: /etc/resolv.conf
         line: "nameserver 10.0.2.3"
         state: absent
- 
+
     - name: Add DNS server
       ansible.builtin.lineinfile:
         path: /etc/resolv.conf
         line: "nameserver 192.168.62.254"
         state: present
- 
-#- name: Enable DHCP on internal company LAN
-#  hosts: companyrouter
-#  become: yes
-#  tasks:
-#    - name: Install DHCP server
-#      ansible.builtin.package:
-#        name: dhcp-server
-#        state: present
-#
-#    - name: Copy DHCP configuration
-#      ansible.builtin.copy:
-#        src: ./files/companyrouter/etc/dhcp/dhcpd.conf
-#        dest: /etc/dhcp/dhcpd.conf
-#
-#    - name: Enable DHCP server
-#      ansible.builtin.service:
-#        name: dhcpd
-#        enabled: yes
-#        state: started
-#
-#- name: Enable DHCP on employee home LAN
-#  hosts: homerouter
-#  become: yes
-#  tasks:
-#    - name: Install DHCP server
-#      ansible.builtin.package:
-#        name: dhcp
-#        state: present
-#
-#    - name: Copy DHCP configuration
-#      ansible.builtin.copy:
-#        src: ./files/homerouter/etc/dhcp/dhcpd.conf
-#        dest: /etc/dhcp/dhcpd.conf
-#
-#    - name: Enable DHCP server
-#      ansible.builtin.service:
-#        name: dhcpd
-#        enabled: yes
-#        state: started
-#
-## TODO
-## - Reboot all routers or all devices
-## - DHCP remote
-## - Database
-## - Web server
-#

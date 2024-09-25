@@ -9,8 +9,7 @@ for vm in \
     "database" \
     "employee" \
     "homerouter" \
-    "remote_employee" \
-    "debug"
+    "remote-employee"
 do
     echo "Disabling NAT for ${vm}"
     VBoxManage controlvm "${vm}" setlinkstate1 off

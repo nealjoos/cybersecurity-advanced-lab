@@ -7,63 +7,34 @@
         path: /etc/resolv.conf
         line: "nameserver 10.0.2.3"
         state: absent
- 
+
     - name: Add DNS server
       ansible.builtin.lineinfile:
         path: /etc/resolv.conf
         line: "nameserver 192.168.62.254"
         state: present
- 
+
     - name: Install bind
       ansible.builtin.package:
         name: bind
         state: present
- 
+
     - name: Copy bind config
       ansible.builtin.copy:
         src: ./files/dns/etc/named.conf
         dest: /etc/bind/named.conf
- 
+
     - name: Copy bind zone file config
       ansible.builtin.copy:
         src: ./files/dns/etc/cybersec.internal
         dest: /var/bind/cybersec.internal
- 
- 
+
     - name: Enable and start bind
       ansible.builtin.service:
         name: named
         enabled: yes
         state: restarted
- 
-#    - name: Install unbound
-#      ansible.builtin.package:
-#        name: unbound
-#        state: present
-#
-#    - name: Create unbound.conf.d dir
-#      ansible.builtin.file:
-#        path: /etc/unbound/unbound.conf.d
-#        state: directory
-#        mode: '0755'
-#
-#    - name: Copy unbound general config
-#      ansible.builtin.copy:
-#        src: ./files/dns/etc/unbound.conf
-#        dest: /etc/unbound/unbound.conf
-#
-#    - name: Copy unbound cybersec.internal config
-#      ansible.builtin.copy:
-#        src: ./files/dns/etc/cybersec-internal.conf
-#        dest: /etc/unbound/unbound.conf.d/cybersec.internal.conf
-#    
-#    - name: Enable and start unbound
-#      ansible.builtin.service:
-#        name: unbound
-#        enabled: yes
-#        state: restarted
- 
- 
+
 - name: Configure dns server in internal company network
   hosts: web, database, employee, debug, companyrouter
   become: yes
@@ -73,13 +44,13 @@
         path: /etc/resolv.conf
         line: "nameserver 10.0.2.3"
         state: absent
-   
+
     - name: Remove isp DNS server
       ansible.builtin.lineinfile:
         path: /etc/resolv.conf
         line: "nameserver 192.168.62.254"
         state: absent
- 
+
     - name: Add DNS server
       ansible.builtin.lineinfile:
         path: /etc/resolv.conf
