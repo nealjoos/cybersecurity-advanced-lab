@@ -1,66 +1,52 @@
 - name: Configure database
   hosts: database
   become: yes
+  vars:
+    root_password: rootpassword
+    db_user: toor
+    db_user_password: summer
+    db_name: db_services
   tasks:
-    - name: Remove original DNS server
-      ansible.builtin.lineinfile:
-        path: /etc/resolv.conf
-        line: "nameserver 10.0.2.3"
-        state: absent
- 
-    - name: Add DNS server - (temporary as it should be the internal dns server at the end)
-      ansible.builtin.lineinfile:
-        path: /etc/resolv.conf
-        line: "nameserver 192.168.62.254"
-        state: present
-
     - name: Install mysql, client and pip
       ansible.builtin.package:
         name:
-        - mysql
-        - mysql-client
-        - py3-pip
+          - mariadb
+          - mariadb-client
+          - py3-pymysql
         state: present
- 
-    - name: Install packages with pip
-      ansible.builtin.pip:
-        name: pymysql
-        state: present
- 
+
     - name: Copy mysql configuration
       ansible.builtin.copy:
-        src: ./files/database/etc/mysql-server.cnf
+        src: ./files/database/etc/mariadb-server.cnf
         dest: /etc/my.cnf.d/mariadb-server.cnf
- 
-    - name: Run interactive first mysql command
-      ansible.builtin.shell: |
-        sudo /etc/init.d/mariadb setup
- 
+
+    - name: Run interactive first mariadb command
+      ansible.builtin.shell: /etc/init.d/mariadb setup
+
     - name: Service enabled and started
       ansible.builtin.service:
         name: mariadb
         enabled: yes
         state: restarted
-   
+
     - name: Set root password
       ansible.builtin.shell: |
-        mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY 'rootpassword';"
-        mysql -u root -prootpassword -e "FLUSH PRIVILEGES;"
- 
-    - name: create new user toor
+        mariadb -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '{{ root_password }}';"
+        mariadb -u root -p{{ root_password }} -e "FLUSH PRIVILEGES;"
+
+    - name: "create new user {{ db_user }}"
       community.mysql.mysql_user:
-        name: toor
-        password: summer
-        host: '%'
-        priv: '*.*:ALL'
+        name: "{{ db_user }}"
+        password: "{{ db_user_password }}"
+        host: "%"
+        priv: "*.*:ALL"
         state: present
         login_user: root
-        login_password: 'rootpassword'
- 
+        login_password: "{{ root_password }}"
+
     - name: create new database services
       community.mysql.mysql_db:
-        name: db_services
+        name: "{{ db_name }}"
         state: present
         login_user: root
-        login_password: 'rootpassword'
-        
+        login_password: "{{ root_password }}"

@@ -126,6 +126,7 @@ Vagrant.configure("2") do |config|
         host.vm.provision "shell", inline: <<-SHELL
             apk --no-cache add python3 # For ansible
         SHELL
+        host.vm.provision "file", source: "ansible", destination: "$HOME/ansible"
     end
 
     config.vm.define "homerouter" do |host|

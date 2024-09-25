@@ -77,24 +77,22 @@ nwdiag {
     ssh vagrant@192.168.62.254
     ```
 
+    :bulb: It could be that you have to wait a minute until the isprouter VM has booted and accepts SSH requests.
+
+    :bulb: Vagrant boxes often use the following credentials:
+
+    - username: `vagrant`
+    - password: `vagrant`
+
 5. Execute the following commands. This can take a while!
 
     ```bash
-    sudo su -
-    apk add git ansible-core sshpass
-    ansible-galaxy collection install ansible.posix
-    ansible-galaxy collection install community.general
-    ansible-galaxy collection install community.mysql
-    git clone https://github.com/HoGentTIN/cybersecurity-advanced-lab-template.git
-    cd cybersecurity-advanced-lab-template/
-    ansible-playbook --inventory ansible/inventory.yml ansible/playbook.yml
-    service network restart
-    ansible-playbook --inventory ansible/inventory.yml ansible/dns.yml
-    ansible-playbook --inventory ansible/inventory.yml ansible/database.yml
-    ansible-playbook --inventory ansible/inventory.yml ansible/webserver.yml
+    isprouter:~$ cd ansible/
+    isprouter:~/ansible$ sudo ./run-on-isprouter.sh
+    ...
 
     # Use the following command to check if the network is setup OK
-    ansible-playbook --inventory ansible/inventory.yml ansible/check.yml
+    isprouter:~/ansible$ sudo ansible-playbook --inventory inventory.yml check.yml
 
     exit
     ```

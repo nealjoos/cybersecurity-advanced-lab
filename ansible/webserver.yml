@@ -43,7 +43,7 @@
       ansible.builtin.file:
         path: /opt/insecurewebapp/
         state: directory
-        mode: '0755'
+        mode: "0755"
 
     - name: Copy app.jar
       ansible.builtin.copy:
@@ -66,13 +66,13 @@
       ansible.builtin.file:
         path: /opt/flask/
         state: directory
-        mode: '0755'
+        mode: "0755"
 
     - name: Create flask dir templates in opt
       ansible.builtin.file:
         path: /opt/flask/templates
         state: directory
-        mode: '0755'
+        mode: "0755"
 
     - name: Copy flask app - app.py
       ansible.builtin.copy:
