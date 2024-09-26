@@ -88,6 +88,7 @@ nwdiag {
 
     ```bash
     isprouter:~$ cd ansible/
+    isprouter:~/ansible$ find . -type f -print0 | xargs -0 dos2unix
     isprouter:~/ansible$ sudo ./run-on-isprouter.sh
     ...
 
@@ -96,3 +97,5 @@ nwdiag {
 
     exit
     ```
+
+    :bulb: We have added `dos2unix` here for Windows users, but why do they need this? Tip: Linux users don't need this. Tip2: `\r\n` vs. `\n`.

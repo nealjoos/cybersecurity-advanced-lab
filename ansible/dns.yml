@@ -110,3 +110,20 @@
       ansible.builtin.service:
         name: NetworkManager
         state: restarted
+
+- name: Configure DNS server for alpine hosts in employee home network
+  hosts: remote_employee
+  become: yes
+  tasks:
+    - name: Add DNS server address
+      community.general.nmcli:
+        conn_name: System eth1
+        type: ethernet
+        dns4:
+          - 192.168.62.254
+        state: present
+
+    - name: Restart network
+      ansible.builtin.service:
+        name: NetworkManager
+        state: restarted

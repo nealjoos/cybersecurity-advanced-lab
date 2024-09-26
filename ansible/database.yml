@@ -7,7 +7,7 @@
     db_user_password: summer
     db_name: db_services
   tasks:
-    - name: Install mysql, client and pip
+    - name: Install mysql, client and python connection library
       ansible.builtin.package:
         name:
           - mariadb

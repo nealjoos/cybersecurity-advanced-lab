@@ -63,30 +63,13 @@
         value: "1"
         state: present
         reload: true
-# - name: Add DNS server address to company router
-#   hosts: companyrouter
-#   become: yes
-#   tasks:
-#     - name: Add DNS server address
-#       community.general.nmcli:
-#         conn_name: System eth2
-#         type: ethernet
-#         dns4:
-#           - 192.168.62.254
-#         state: present
 
-# - name: Add DNS server address to home router
-#   hosts: homerouter
-#   become: yes
-#   tasks:
-#     - name: Remove original DNS server
-#       ansible.builtin.lineinfile:
-#         path: /etc/resolv.conf
-#         line: "nameserver 10.0.2.3"
-#         state: absent
+- name: Configure interfaces on homerouter
+  hosts: homerouter
+  become: yes
+  tasks:
+    - name: Write /etc/network/interfaces
+      ansible.builtin.copy:
+        src: ./files/homerouter/etc/network/interfaces
+        dest: /etc/network/interfaces
 
-#     - name: Add DNS server
-#       ansible.builtin.lineinfile:
-#         path: /etc/resolv.conf
-#         line: "nameserver 192.168.62.254"
-#         state: present

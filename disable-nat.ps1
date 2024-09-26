@@ -11,7 +11,7 @@ $vms = @(
     "database",
     "employee",
     "homerouter",
-    "remote-employee",
+    "remote-employee"
 )
 
 ForEach($vm in $vms) {
