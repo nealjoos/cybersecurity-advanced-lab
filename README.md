@@ -94,8 +94,6 @@ nwdiag {
 
     # Use the following command to check if the network is setup OK
     isprouter:~/ansible$ sudo ansible-playbook --inventory inventory.yml check.yml
-
-    exit
     ```
 
     :bulb: We have added `dos2unix` here for Windows users, but why do they need this? Tip: Linux users don't need this. Tip2: `\r\n` vs. `\n`.
