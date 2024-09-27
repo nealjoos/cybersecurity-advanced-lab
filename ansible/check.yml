@@ -52,8 +52,7 @@
       ansible.builtin.package:
         name:
           - mysql
-          - mysql-client
-          - py3-pymysql
+          - python3-PyMySQL
         state: present
 
     - name: Check if we can log in to MySQL
