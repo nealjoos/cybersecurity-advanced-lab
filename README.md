@@ -69,9 +69,7 @@ nwdiag {
 
 2. `vagrant up --parallel` or go slowly (1 by 1) and do `vagrant up <vm_name>`
 
-3. Disable all the NAT connections added by vagrant: `./disable-nat.sh` or use `./disable-nat.ps1`
-
-    :bulb: On Windows, if you receive an error about running scripts being disabled, make sure you understand what this is. A quick alternative is to copy over the contents in PowerShell ISE or in an interactive PowerShell window).
+3. Disable all the NAT connections added by vagrant: `python ./disable-nat.py`
 
     :warning: `vagrant ssh` won't work anymore and that is **by design**! This command is also not available in a real network, so learn to use SSH properly: login into the required hosts using SSH with IP addresses and jump/forward options!
 
