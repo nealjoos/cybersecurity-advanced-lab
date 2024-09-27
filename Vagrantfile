@@ -21,7 +21,7 @@ Vagrant.configure("2") do |config|
         host.vm.provision "shell", inline: <<-SHELL
             # Default gateway
             nmcli connection modify "System eth1" ipv4.gateway 192.168.62.254
-            nmcli connection down "System eth1" && nmcli connection up "System eth1"
+            systemctl restart NetworkManager
         SHELL
     end
 
@@ -62,7 +62,7 @@ Vagrant.configure("2") do |config|
         host.vm.provision "shell", inline: <<-SHELL
             # Default gateway
             nmcli connection modify "System eth1" ipv4.gateway 172.30.255.254
-            nmcli connection down "System eth1" && nmcli connection up "System eth1"
+            systemctl restart NetworkManager
         SHELL
     end
 
@@ -143,7 +143,8 @@ Vagrant.configure("2") do |config|
         end
 
         host.vm.provision "shell", inline: <<-SHELL
-            nmcli connection modify "System eth1" ipv4.gateway 192.168.62.42
+            # Default gateway
+            nmcli connection modify "System eth1" ipv4.gateway 192.168.62.254
             systemctl restart NetworkManager
         SHELL
     end
@@ -163,7 +164,7 @@ Vagrant.configure("2") do |config|
         host.vm.provision "shell", inline: <<-SHELL
             # Default gateway
             nmcli connection modify "System eth1" ipv4.gateway 172.10.10.254
-            nmcli connection down "System eth1" && nmcli connection up "System eth1"
+            systemctl restart NetworkManager
         SHELL
     end
 end

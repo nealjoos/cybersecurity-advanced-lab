@@ -23,7 +23,7 @@
 
     - name: Restart networking to apply the static route
       ansible.builtin.service:
-        name: network
+        name: networking
         state: restarted
 
     - name: Install firewall
@@ -63,13 +63,3 @@
         value: "1"
         state: present
         reload: true
-
-- name: Configure interfaces on homerouter
-  hosts: homerouter
-  become: yes
-  tasks:
-    - name: Write /etc/network/interfaces
-      ansible.builtin.copy:
-        src: ./files/homerouter/etc/network/interfaces
-        dest: /etc/network/interfaces
-

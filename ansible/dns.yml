@@ -111,8 +111,8 @@
         name: NetworkManager
         state: restarted
 
-- name: Configure DNS server for alpine hosts in employee home network
-  hosts: remote_employee
+- name: Configure DNS server for employee home network
+  hosts: homerouter, remote_employee
   become: yes
   tasks:
     - name: Add DNS server address
