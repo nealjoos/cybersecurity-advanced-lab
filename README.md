@@ -90,7 +90,7 @@ nwdiag {
 
     ```bash
     isprouter:~$ cd ansible/
-    isprouter:~/ansible$ find . -type f -print0 | xargs -0 dos2unix
+    isprouter:~/ansible$ find . -type f -not -path "./files/web/app.jar" -print0 | xargs -0 dos2unix
     isprouter:~/ansible$ sudo ./run-on-isprouter.sh
     ...
 
