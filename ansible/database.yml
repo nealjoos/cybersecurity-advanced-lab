@@ -20,7 +20,7 @@
         src: ./files/database/etc/mariadb-server.cnf
         dest: /etc/my.cnf.d/mariadb-server.cnf
 
-    - name: Run interactive first mariadb command
+    - name: Run interactive first mariadb command (this task is not idempotent)
       ansible.builtin.shell: /etc/init.d/mariadb setup
 
     - name: Service enabled and started
@@ -29,7 +29,7 @@
         enabled: yes
         state: restarted
 
-    - name: Set root password
+    - name: Set root password (this task is not idempotent)
       ansible.builtin.shell: |
         mariadb -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '{{ root_password }}';"
         mariadb -u root -p{{ root_password }} -e "FLUSH PRIVILEGES;"
