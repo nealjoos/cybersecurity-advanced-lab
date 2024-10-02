@@ -12,6 +12,7 @@ Vagrant.configure("2") do |config|
 
         host.vm.provider :virtualbox do |v|
             v.name = "companyrouter"
+            v.customize ["modifyvm", :id, "--groups", "/CSA"]
             v.cpus = "1"
             v.memory = "1024"
         end
@@ -31,6 +32,7 @@ Vagrant.configure("2") do |config|
 
         host.vm.provider :virtualbox do |v|
             v.name = "dns"
+            v.customize ["modifyvm", :id, "--groups", "/CSA"]
             v.cpus = "1"
             v.memory = "256"
         end
@@ -53,6 +55,7 @@ Vagrant.configure("2") do |config|
 
         host.vm.provider :virtualbox do |v|
             v.name = "web"
+            v.customize ["modifyvm", :id, "--groups", "/CSA"]
             v.cpus = "1"
             v.memory = "1024"
         end
@@ -72,6 +75,7 @@ Vagrant.configure("2") do |config|
 
         host.vm.provider :virtualbox do |v|
             v.name = "database"
+            v.customize ["modifyvm", :id, "--groups", "/CSA"]
             v.cpus = "1"
             v.memory = "256"
         end
@@ -95,6 +99,7 @@ Vagrant.configure("2") do |config|
 
         host.vm.provider :virtualbox do |v|
             v.name = "employee"
+            v.customize ["modifyvm", :id, "--groups", "/CSA"]
             v.cpus = "1"
             v.memory = "256"
         end
@@ -117,6 +122,7 @@ Vagrant.configure("2") do |config|
 
         host.vm.provider :virtualbox do |v|
             v.name = "isprouter"
+            v.customize ["modifyvm", :id, "--groups", "/CSA"]
             v.cpus = "1"
             v.memory = "256"
         end
@@ -136,6 +142,7 @@ Vagrant.configure("2") do |config|
 
         host.vm.provider :virtualbox do |v|
             v.name = "homerouter"
+            v.customize ["modifyvm", :id, "--groups", "/CSA"]
             v.cpus = "1"
             v.memory = "1024"
         end
@@ -155,6 +162,7 @@ Vagrant.configure("2") do |config|
 
         host.vm.provider :virtualbox do |v|
             v.name = "remote-employee"
+            v.customize ["modifyvm", :id, "--groups", "/CSA"]
             v.cpus = "1"
             v.memory = "1024"
         end
