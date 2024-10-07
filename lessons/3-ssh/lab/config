@@ -1,0 +1,36 @@
+Host isprouter
+	HostName 192.168.62.254
+	User vagrant
+
+Host companyrouter
+	HostName 192.168.62.253
+	User vagrant
+
+Host dns
+	HostName 172.30.0.4
+	User vagrant
+	ProxyJump companyrouter
+
+Host web
+	HostName 172.30.0.10
+	User vagrant
+	ProxyJump companyrouter
+
+Host database
+	HostName 172.30.0.15
+	User vagrant
+	ProxyJump companyrouter
+
+Host employee
+	HostName 172.30.0.123
+	User vagrant
+	ProxyJump companyrouter
+
+Host homerouter
+	HostName 192.168.62.42
+	User vagrant
+
+Host remote-employee
+	HostName 172.10.10.123
+	User vagrant
+	ProxyJump homerouter
