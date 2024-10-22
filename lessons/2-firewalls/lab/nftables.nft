@@ -1,0 +1,60 @@
+#!/usr/sbin/nft -f
+
+flush ruleset;
+
+define INTERNET = eth0;
+define SERVERS = eth1;
+define DMZ = eth2;
+define CLIENTS = eth3;
+define TRUSTED = 192.168.62.98; # Kali host
+define WEB_SERVER = 172.30.64.10;
+define DNS_SERVER = 172.30.0.4;
+define DB_SERVER = 172.30.0.15;
+
+table ip global {
+
+    chain inbound {
+        type filter hook input priority 0; policy drop;
+
+        # Allow traffic from established and related packets, drop invalid
+        ct state vmap { established : accept, related : accept, invalid : drop };
+
+        # accepting ping (icmp-echo-request) for diagnostic purposes.
+        icmp type echo-request limit rate 5/second accept;
+
+        # allow SSH connections from some well-known internet host
+        ip saddr $TRUSTED tcp dport 22 accept;
+
+        # The rest is dropped by the above policy
+    }
+
+    chain forward {
+        type filter hook forward priority 0; policy drop;
+
+        # Allow traffic from established and related packets, drop invalid
+        ct state vmap { established : accept, related : accept, invalid : drop };
+
+        # Allow traffic from SERVERS, DMZ and CLIENTS to INTERNET
+        iifname { $SERVERS, $DMZ, $CLIENTS } oifname $INTERNET accept;
+
+        # Allow DNS traffic from DMZ and CLIENTS to DNS_SERVER
+        iifname { $DMZ, $CLIENTS } ip daddr $DNS_SERVER tcp dport 53 accept;
+        iifname { $DMZ, $CLIENTS } ip daddr $DNS_SERVER udp dport 53 accept;
+
+        # Allow HTTP traffic from CLIENTS and INTERNET to WEB_SERVER
+        iifname { $CLIENTS, $INTERNET } ip daddr $WEB_SERVER tcp dport 80 accept;
+
+        # Allow MYSQL traffic from DB_SERVER to SERVERS
+        ip saddr $WEB_SERVER ip daddr $DB_SERVER tcp dport 3306 accept;
+
+        # the rest is dropped by the above policy
+    }
+
+    chain postrouting {
+        type nat hook postrouting priority 100; policy accept;
+
+        # Masquerade traffic from SERVERS, DMZ, and CLIENTS going to INTERNET
+        iifname { $SERVERS, $DMZ, $CLIENTS } oifname $INTERNET masquerade;
+
+    }
+}

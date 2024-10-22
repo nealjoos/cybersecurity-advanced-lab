@@ -90,4 +90,52 @@ Create some new internal networks:
 -   csa-clients
 -   csa-servers
 
-## Install nftables
+## Changes made:
+
+-   Changed device IPs and subnet masks according to the new network topology where required.
+-   Changed default gateways where required.
+-   Changed DNS records so it resolves correctly to the correct servers since the IPs have changed.
+
+## nftables config
+
+See nftables.nft
+
+# Open, closed, filtered ports
+
+Finish by performing a nmap scan to web on ports 80, 22 and 666. For port 80 you should see "open", what do you notice on port 22 and 666? Can you explain this result? Make your firewall insecure again and rerun the scan, analyze the differences. We expect you to learn and know the difference between open/closed/filtered!
+
+## Result with firewall enabled
+
+```bash
+└─$ nmap 172.30.64.10 -p22,80,666
+Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-10-22 18:30 CEST
+Nmap scan report for 172.30.64.10
+Host is up (0.00083s latency).
+
+PORT    STATE    SERVICE
+22/tcp  filtered ssh
+80/tcp  open     http
+666/tcp filtered doom
+
+Nmap done: 1 IP address (1 host up) scanned in 1.47 seconds
+```
+
+## Result with firewall disabled
+
+```bash
+└─$ nmap 172.30.64.10 -p22,80,666
+Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-10-22 18:32 CEST
+Nmap scan report for 172.30.64.10
+Host is up (0.00059s latency).
+
+PORT    STATE  SERVICE
+22/tcp  open   ssh
+80/tcp  open   http
+666/tcp closed doom
+
+Nmap done: 1 IP address (1 host up) scanned in 0.15 seconds
+```
+
+## Conclusion
+
+A filtered port is a port where nmap cannot determine whether the port is open or not because packet filtering prevents its probes from reaching the port.

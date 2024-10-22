@@ -9,10 +9,10 @@ $TTL 86400
         IN NS   dns.cybersec.internal.
 
 dns     IN A    172.30.0.4
-www     IN A    172.30.0.10
+www     IN A    172.30.64.10
 
 txt.at  IN TXT  "Greetings from CSA team!"
 
 ; PTR records (reverse mapping)
 172.30.0.4.in-addr.arpa.   IN PTR dns.cybersec.internal.
-172.30.0.10.in-addr.arpa.  IN PTR www.cybersec.internal.
+172.30.64.10.in-addr.arpa.  IN PTR www.cybersec.internal.

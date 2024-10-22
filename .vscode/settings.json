@@ -1,0 +1,6 @@
+{
+    "[nft]": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "omBratteng.nftables"
+    }
+}
