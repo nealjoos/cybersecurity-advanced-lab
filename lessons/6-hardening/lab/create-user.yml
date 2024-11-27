@@ -1,0 +1,10 @@
+- name: Create walt user on every Linux host
+  hosts: linux
+  become: yes
+  tasks:
+    - name: Create walt user
+      ansible.builtin.user:
+        name: walt
+        state: present
+        shell: /bin/bash
+        password: $y$j9T$N97br04TCaI5AimREpdyD.$ZhDmyBxIuZe6OBF8gR7F9WapZmyaEusjA1Z7l5TQ0M7

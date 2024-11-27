@@ -1,0 +1,7 @@
+- name: Copy a text file
+  hosts: linux
+  tasks:
+    - name: Copy a text file
+      ansible.builtin.copy:
+        src: ./example.txt
+        dest: ~/example.txt

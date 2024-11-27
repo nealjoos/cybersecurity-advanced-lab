@@ -1,0 +1,12 @@
+---
+- name: Get list of users allowed to log in
+  hosts: linux
+  gather_facts: no
+  tasks:
+    - name: Find users with valid login shells
+      shell: "awk -F: '/\\/bin\\/(bash|sh)$/{print $1}' /etc/passwd"
+      register: login_users
+
+    - name: Display allowed login users
+      debug:
+        var: login_users.stdout_lines

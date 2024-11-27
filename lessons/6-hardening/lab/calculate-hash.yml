@@ -1,0 +1,11 @@
+---
+- name: Calculate checksum of a file
+  hosts: linux
+  tasks:
+    - name: Calculate checksum of the zip binary
+      ansible.builtin.command: "sha256sum /usr/bin/find"
+      register: checksum
+
+    - name: Display the checksum of the zip binary
+      debug:
+        msg: "Checksum of the binary is: {{ checksum.stdout }}"

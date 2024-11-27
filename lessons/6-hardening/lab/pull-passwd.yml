@@ -1,0 +1,9 @@
+- name: Pull all /etc/passwd files from all hosts
+  hosts: linux
+  become: yes
+  tasks:
+    - name: Pull /etc/passwd file
+      ansible.builtin.fetch:
+        src: /etc/passwd
+        dest: /tmp/{{ inventory_hostname }}_passwd
+        flat: yes
