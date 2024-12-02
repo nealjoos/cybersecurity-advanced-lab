@@ -29,3 +29,15 @@
 10. Restore the original files using the first backup on the database server (without the test.txt file) to the same place on web so it seems like nothing has happened. --strip-elements may come in handy here as borg uses absolute paths inside backups. You should see a similar output after restoring the backup:
 
         borg extract /path/to/repo::my-files
+
+11. Automate the backups and set an appropriate retention policy. Look at the documentation to have a starting point. What is the retention policy here? Have you ever heard of the Grandfather-Father-Son policy? The automation should create a backup every 5 minutes. There are various ways to do this, but we prefer a systemd timer to execute the script on the time intervals.
+
+        Retention policy is the policy that defines how long the backups should be kept. The Grandfather-Father-Son policy is a backup rotation scheme that keeps daily, weekly, and monthly backups.
+
+    -   What does the borg compact command do?
+
+                The `borg compact` command removes the segments of the repository that are no longer needed. It rewrites the repository to remove the segments that are no longer referenced by any archive.
+
+-   There is a tool that has been built on top of borg called borgmatic. What does it do? Could it be useful to you? Why (not)?
+
+        Borgmatic is a wrapper script for BorgBackup that simplifies the configuration and management of backups. It automates the backup process and provides a simple configuration file to define the backup settings. It could be useful to automate the backup process and manage the backup settings.
