@@ -100,5 +100,3 @@ nwdiag {
     ```
 
     :bulb: We have added `dos2unix` here for Windows users, but why do they need this? Tip: Linux users don't need this. Tip2: `\r\n` vs. `\n`.
-
-:bulb: The new version of VirtualBox is currently not compatible with vagrant. or you stay on 7.0, or you can use [libvirt](https://vagrant-libvirt.github.io/vagrant-libvirt/) (tip provided by [@CharanChander](https://github.com/CharanChander))
