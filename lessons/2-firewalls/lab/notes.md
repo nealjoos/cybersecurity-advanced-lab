@@ -100,6 +100,9 @@ Create some new internal networks:
 
 See nftables.nft
 
+Apply the config using `sudo nft -f nftables.nft`
+Revert to defaults using `sudo nft flush ruleset`
+
 # Open, closed, filtered ports
 
 Finish by performing a nmap scan to web on ports 80, 22 and 666. For port 80 you should see "open", what do you notice on port 22 and 666? Can you explain this result? Make your firewall insecure again and rerun the scan, analyze the differences. We expect you to learn and know the difference between open/closed/filtered!
