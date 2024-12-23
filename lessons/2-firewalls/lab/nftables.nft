@@ -25,6 +25,12 @@ table ip global {
         # allow SSH connections from some well-known internet host
         ip saddr $TRUSTED tcp dport 22 accept;
 
+        # Allow IPsec ESP traffic
+        ip protocol esp accept;
+
+        # Allow IPsec ISAKMP traffic
+        ip protocol udp udp dport 500 accept;
+
         # The rest is dropped by the above policy
     }
 
