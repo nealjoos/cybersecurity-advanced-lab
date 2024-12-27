@@ -26,4 +26,6 @@ sudo ettercap -Tq -i eth0 -M arp:remote /192.168.62.42// /192.168.62.253//
 
     Yes.
 
-## IPsec set-up
+-   You are using static keys, opposed to what IKE would organize for you. But knowing the key, and the SPI: can you decrypt the traffic you have captured in Wireshark?
+
+    Yes, you can add the key and SPI in the Wireshark settings.
