@@ -47,8 +47,9 @@ table ip global {
         iifname { $DMZ, $CLIENTS } ip daddr $DNS_SERVER tcp dport 53 accept;
         iifname { $DMZ, $CLIENTS } ip daddr $DNS_SERVER udp dport 53 accept;
 
-        # Allow HTTP traffic from CLIENTS and INTERNET to WEB_SERVER
+        # Allow HTTP(S) traffic from CLIENTS and INTERNET to WEB_SERVER
         iifname { $CLIENTS, $INTERNET } ip daddr $WEB_SERVER tcp dport 80 accept;
+        iifname { $CLIENTS, $INTERNET } ip daddr $WEB_SERVER tcp dport 443 accept;
 
         # Allow MYSQL traffic from DB_SERVER to SERVERS
         ip saddr $WEB_SERVER ip daddr $DB_SERVER tcp dport 3306 accept;

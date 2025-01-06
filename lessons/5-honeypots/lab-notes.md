@@ -6,6 +6,9 @@
 
 2.  Change your current SSH configuration in such a way that the SSH server (daemon) is not listening on port 22 anymore but on port 2222.
 3.  Install and run the cowrie software on the router and listen on port 22 - the default SSH server port.
+
+        docker run -p 22:2222 cowrie/cowrie:latest
+
 4.  Once configured and up and running, verify that you can still SSH to the router normally, using port 2222.
 5.  Attack your router and try to SSH normally. What do you notice?
 

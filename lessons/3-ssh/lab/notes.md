@@ -29,6 +29,10 @@ A Bastion Host (or a jump server) is a dedicated computer used to access infrast
 
 # What is the difference between local and remote port forwarding using SSH? You should be able to explain the difference using a proper use case.
 
+Local port forwarding is used to forward a port from the client machine to the server machine. Basically, the client creates a connection to the server and then the server creates a connection to a remote host. The server forwards the data between the client and the remote host. An example of local port forwarding is to forward a port from a local computer to a server such as a web server (so that you can access a website that is blocked on your local network).
+
+Remote port forwarding does the opposite: it forwards a port from the server to the client. An example of remote port forwarding is to forward a port from a server to a local computer. The server creates a connection to the client and the client creates a connection to a remote host. The server forwards the data between the client and the remote host. An example of remote port forwarding is to securely access a remote database that is blocked by a firewall.
+
 # What is the SOCKS protocol conceptually and give an example where or when this might be interesting.
 
 SOCKS is another internet protocol. It stands for SOCKet Secure and is commonly used for traffic-intensive tasks, like content streaming or P2P sharing. SOCKS uses a Transmission Control Protocol (TCP) connection that is designed to send and receive data packets across the internet, as well as to guarantee successful delivery of resources over networks.

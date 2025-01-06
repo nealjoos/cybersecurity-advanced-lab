@@ -1,5 +1,13 @@
 # Backups
 
+**Password**: `vagrant`
+
+Run Borg commands using
+
+```bash
+borg COMMAND ssh://database/~/backups
+```
+
 1. Create a folder on the web VM and store the files (e.g. ~/important-files). Use curl with the --location and --remote-name-all options. What do these options do? Why do you need them? Do you really need them? What happens without them?
 
     - The `--location` option is used to follow redirects. The `--remote-name-all` option is used to save the file with the same name as the remote file. You need these options to download the file from the remote server and save it with the same name. If you don't use these options, the file will be saved with a different name.
@@ -36,7 +44,7 @@
 
     -   What does the borg compact command do?
 
-                The `borg compact` command removes the segments of the repository that are no longer needed. It rewrites the repository to remove the segments that are no longer referenced by any archive.
+            The `borg compact` command removes the segments of the repository that are no longer needed. It rewrites the repository to remove the segments that are no longer referenced by any archive.
 
 -   There is a tool that has been built on top of borg called borgmatic. What does it do? Could it be useful to you? Why (not)?
 

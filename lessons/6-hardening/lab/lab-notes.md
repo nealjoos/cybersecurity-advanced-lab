@@ -1,5 +1,11 @@
 # Hardening
 
+**First, switch user to `ansible`**
+
+```bash
+su ansible
+```
+
 ## Ansible inventory file
 
 ```yaml
